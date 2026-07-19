@@ -2,6 +2,21 @@ export const invitation = {
   siteTitle: '하늘과 바다의 결혼식',
   heroImage: 'images/hero-wedding.png',
   heroImageAlt: '두 사람의 웨딩 사진',
+  social: {
+    title: '김하늘 ♥ 이바다 결혼합니다',
+    description: '2026년 10월 25일 일요일 오후 12시 30분, 라온 컨벤션 2층 가든 홀',
+    siteUrl: 'https://20261025.github.io/wedding-invitation/',
+    image: 'images/hero-wedding.png',
+    imageAlt: '김하늘과 이바다의 웨딩 사진',
+  },
+  theme: {
+    paperTexture: 'images/paper-texture.png',
+    fonts: {
+      body: '"Gowun Dodum", sans-serif',
+      display: '"Gowun Dodum", sans-serif',
+      accent: '"Gowun Dodum", sans-serif',
+    },
+  },
   couple: {
     groom: {
       name: '김하늘',
@@ -33,19 +48,29 @@ export const invitation = {
     hall: '2층 가든 홀',
     address: '서울시 구로구 경인로 624',
     detail: '지하철 1호선 신도림역 1번 출구 도보 5분',
-    latitude: '37.5087',
-    longitude: '126.8905',
+    latitude: '37.50623951983282',
+    longitude: '126.88539450791446',
+    kakaoMapAppKey: 'bf737c0f633d3d0ce522d13dd8a7db30',
+    kakaoMapUrl: 'https://place.map.kakao.com/1212235250',
   },
   poem: [
-    '봄의 마음으로 서로를 마주하고',
-    '여름의 용기로 하루를 함께하며',
-    '가을의 다정함을 나누고',
-    '겨울의 온기로 곁을 지키겠습니다.',
-    '서로에게 가장 기쁜 계절이 되어',
-    '새로운 시작을 함께해 주세요.',
+    '“봄의 그대는 벚꽃이었고',
+    '여름의 그대는 바람이었으며',
+    '가을의 그대는 하늘이었고',
+    '겨울의 그대는 하얀 눈이었다.',
+    '',
+    '그대는 언제나',
+    '행복 그 자체였다.”',
+    '',
+    '\– 강현욱 \<사계\> 중'
   ],
-  invitationText:
-    '두 사람이 만나 미래를 함께하고자 합니다. 서로 모르고 살아온 어제보다 함께할 내일이 많다는 사실에 감사합니다. 부부라는 이름으로 새로이 시작하는 오늘, 가까이에서 축복해 주시면 감사하겠습니다.',
+  invitationText: [
+    '두 사람이 만나 미래를 함께하고자 합니다.',
+    '서로 모르고 살아온 어제보다',
+    '함께할 내일이 많다는 사실에 감사합니다.',
+    '부부라는 이름으로 새로이 시작하는 오늘,',
+    '가까이에서 축복해 주시면 감사하겠습니다.',
+  ],
   gallery: [
     { title: '첫 번째 장면', tone: 'peach' },
     { title: '두 번째 장면', tone: 'sage' },

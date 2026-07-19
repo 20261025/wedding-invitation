@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
+import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
 
 type Countdown = {
@@ -117,8 +118,13 @@ function App() {
   const [openAccount, setOpenAccount] = useState<'groom' | 'bride' | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
   const calendar = useMemo(createCalendar, [])
-  const weddingDate = new Date(invitation.weddingDate)
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
+  const themeStyle: CSSProperties & Record<`--${string}`, string> = {
+    '--paper-texture': `url("${import.meta.env.BASE_URL + invitation.theme.paperTexture}")`,
+    '--font-body': invitation.theme.fonts.body,
+    '--font-display': invitation.theme.fonts.display,
+    '--font-accent': invitation.theme.fonts.accent,
+  }
 
   useEffect(() => {
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000)
@@ -180,8 +186,8 @@ function App() {
 
   async function shareInvitation() {
     const shareData = {
-      title: invitation.siteTitle,
-      text: invitation.couple.groom.name + ' · ' + invitation.couple.bride.name + '의 결혼식에 초대합니다.',
+      title: invitation.social.title,
+      text: invitation.social.description,
       url: window.location.href,
     }
 
@@ -199,13 +205,12 @@ function App() {
 
   function mapLink(provider: 'kakao' | 'naver' | 'tmap') {
     const query = encodeURIComponent(invitation.venue.name + ' ' + invitation.venue.address)
-    if (provider === 'kakao') return 'https://map.kakao.com/?q=' + query
-    if (provider === 'naver') return 'https://map.naver.com/p/search/' + query
+    if (provider === 'kakao') return invitation.venue.kakaoMapUrl
     return 'tmap://route?goalx=' + invitation.venue.longitude + '&goaly=' + invitation.venue.latitude + '&goalname=' + encodeURIComponent(invitation.venue.name)
   }
 
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={themeStyle}>
       <main className="invitation">
         <section className="hero" id="top" aria-label="청첩장 표지">
           <span className="falling-leaf leaf-one" aria-hidden="true" />
@@ -221,9 +226,6 @@ function App() {
               {invitation.couple.groom.name}
               <span> 그리고 </span>
               {invitation.couple.bride.name}
-            </p>
-            <p className="hero-date">
-              {String(weddingDate.getFullYear())}. {String(weddingDate.getMonth() + 1).padStart(2, '0')}. {String(weddingDate.getDate()).padStart(2, '0')}
             </p>
           </div>
 
@@ -269,10 +271,12 @@ function App() {
             </svg>
           </div>
 
-          <div className="hero-venue">
-            <span>{invitation.venue.name}</span>
-            <i />
-            <span>{invitation.venue.hall}</span>
+          <div className="hero-event" aria-label="예식 일시와 장소">
+            <p className="hero-event-date">{invitation.displayDate}</p>
+            <p className="hero-event-venue">
+              <span>{invitation.venue.name}</span>
+              <span>{invitation.venue.hall}</span>
+            </p>
           </div>
           <div className="scroll-hint" aria-hidden="true">
             <span />
@@ -283,7 +287,7 @@ function App() {
         <section className="story section-space reveal-section" data-reveal aria-labelledby="story-heading">
           <FlowerMark />
           <p className="section-eyebrow">OUR PROMISE</p>
-          <h1 id="story-heading">가장 기쁜 계절이 되어</h1>
+          <h1 id="story-heading" className="story-heading">가장 기쁜 계절이 되어</h1>
           <blockquote>
             {invitation.poem.map((line) => (
               <span key={line}>{line}</span>
@@ -295,7 +299,9 @@ function App() {
         <section className="intro section-space reveal-section" data-reveal id="invitation" aria-labelledby="invite-heading">
           <p className="section-eyebrow">INVITATION</p>
           <h2 id="invite-heading">소중한 분들을 초대합니다</h2>
-          <p className="section-body">{invitation.invitationText}</p>
+          <p className="section-body invitation-copy">
+            {invitation.invitationText.map((line, index) => <span key={index + line}>{line}</span>)}
+          </p>
 
           <div className="couple-grid reveal-item">
             <article className="person-card groom-card">
@@ -411,18 +417,14 @@ function App() {
           <p className="section-eyebrow">LOCATION</p>
           <h2 id="location-heading">{invitation.venue.name}</h2>
           <p className="location-hall">{invitation.venue.hall}</p>
-          <div className="map-card reveal-item" aria-label={invitation.venue.address + ' 지도 위치'}>
-            <span className="road road-one" />
-            <span className="road road-two" />
-            <span className="road road-three" />
-            <span className="block block-one" />
-            <span className="block block-two" />
-            <span className="block block-three" />
-            <div className="map-pin">
-              <PinIcon />
-              <span>{invitation.venue.name}</span>
-            </div>
-            <p>MAP</p>
+          <div className="reveal-item">
+            <KakaoMap
+              appKey={invitation.venue.kakaoMapAppKey}
+              latitude={invitation.venue.latitude}
+              longitude={invitation.venue.longitude}
+              title={invitation.venue.name}
+              openUrl={mapLink('kakao')}
+            />
           </div>
           <div className="address-card reveal-item">
             <PinIcon />

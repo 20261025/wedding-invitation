@@ -3,12 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta
-      name="description"
-      content="두 사람의 새로운 시작에 소중한 분들을 초대합니다."
-    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+    <!-- src/data/invitation.ts의 social 값으로 빌드할 때 자동 반영됩니다. -->
+    <meta name="description" content="%INVITATION_SOCIAL_DESCRIPTION%" />
     <meta name="theme-color" content="#f8f5ee" />
-    <title>우리의 결혼식에 초대합니다</title>
+    <link rel="canonical" href="%INVITATION_SOCIAL_URL%" />
+
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="%INVITATION_SITE_NAME%" />
+    <meta property="og:title" content="%INVITATION_SOCIAL_TITLE%" />
+    <meta property="og:description" content="%INVITATION_SOCIAL_DESCRIPTION%" />
+    <meta property="og:url" content="%INVITATION_SOCIAL_URL%" />
+    <meta property="og:image" content="%INVITATION_SOCIAL_IMAGE%" />
+    <meta property="og:image:alt" content="%INVITATION_SOCIAL_IMAGE_ALT%" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%INVITATION_SOCIAL_TITLE%" />
+    <meta name="twitter:description" content="%INVITATION_SOCIAL_DESCRIPTION%" />
+    <meta name="twitter:image" content="%INVITATION_SOCIAL_IMAGE%" />
+    <meta name="twitter:image:alt" content="%INVITATION_SOCIAL_IMAGE_ALT%" />
+    <title>%INVITATION_SOCIAL_TITLE%</title>
   </head>
   <body>
     <div id="root"></div>

@@ -1,7 +1,9 @@
 :root {
+  --groom-color: #5f8b9b;
+  --bride-color: #BB7273;
   color: #343333;
   background: #dedbd1;
-  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  font-family: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -47,6 +49,7 @@ svg {
 
 .app-shell {
   min-height: 100dvh;
+  font-family: var(--font-body, "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif);
 }
 
 .invitation {
@@ -58,10 +61,10 @@ svg {
   overflow: hidden;
   background-color: #f8f6ef;
   background-image:
-    radial-gradient(circle at 10% 12%, rgb(109 92 70 / 8%) 0 0.7px, transparent 0.9px),
-    radial-gradient(circle at 75% 32%, rgb(109 92 70 / 6%) 0 0.7px, transparent 0.9px),
-    linear-gradient(118deg, transparent 0 48%, rgb(255 255 255 / 35%) 49%, transparent 50%);
-  background-size: 7px 7px, 11px 11px, 100% 100%;
+    linear-gradient(rgb(255 255 255 / 18%), rgb(255 255 255 / 18%)),
+    var(--paper-texture);
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
 }
 
 .hero {
@@ -69,9 +72,12 @@ svg {
   min-height: 790px;
   overflow: hidden;
   padding: calc(31px + env(safe-area-inset-top)) 28px 29px;
-  background:
+  background-color: rgb(245 241 232 / 68%);
+  background-image:
     linear-gradient(160deg, rgb(255 253 249 / 84%), rgb(235 232 218 / 50%)),
-    #f5f1e8;
+    var(--paper-texture);
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
 }
 
 .hero::before,
@@ -289,39 +295,49 @@ svg {
   }
 }
 
-.hero-venue {
+.hero-event {
+  position: relative;
+  z-index: 2;
+  margin: 1px auto 0;
+  color: #37332f;
+  text-align: center;
+}
+
+.hero-event-date,
+.hero-event-venue {
+  margin: 0;
+  font-family: "Iowan Old Style", "AppleMyungjo", "Noto Serif KR", serif;
+  font-weight: 200;
+  letter-spacing: -0.055em;
+  word-break: keep-all;
+}
+
+.hero-event-date {
+  font-size: clamp(17px, 4.8vw, 20px);
+  line-height: 1.45;
+}
+
+.hero-event-venue {
+  display: grid;
+  gap: 2px;
+  margin-top: 18px;
+  font-size: clamp(17px, 4.8vw, 20px);
+  line-height: 1.35;
+}
+
+.scroll-hint {
   position: relative;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin: 0 auto;
-  color: #645c55;
-  font-size: 10px;
-  letter-spacing: 0.05em;
-}
-
-.hero-venue i {
-  width: 2px;
-  height: 2px;
-  border-radius: 50%;
-  background: #84786d;
-}
-
-.scroll-hint {
-  position: absolute;
-  z-index: 3;
-  bottom: 18px;
-  left: 50%;
-  display: flex;
-  align-items: center;
   gap: 8px;
+  width: max-content;
+  margin: 23px auto 0;
   color: #968b81;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 7px;
   letter-spacing: 0.2em;
-  transform: translateX(-50%);
   white-space: nowrap;
 }
 
@@ -450,6 +466,12 @@ svg {
 
 .section-space {
   padding: 83px 29px;
+  background-color: rgb(250 248 241 / 72%);
+  background-image:
+    linear-gradient(rgb(255 255 255 / 18%), rgb(255 255 255 / 18%)),
+    var(--paper-texture);
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
   text-align: center;
 }
 
@@ -500,7 +522,7 @@ svg {
 
 .story {
   position: relative;
-  background: #fcfbf6;
+  background-color: rgb(252 251 246 / 72%);
 }
 
 .story > svg,
@@ -523,6 +545,10 @@ svg {
   font-size: 23px;
   font-weight: 400;
   letter-spacing: -0.06em;
+}
+
+.story-heading, #invite-heading, #gallery-heading, #accounts-heading {
+  color: var(--groom-color) !important;
 }
 
 .story blockquote {
@@ -557,6 +583,11 @@ svg {
   line-height: 2;
   letter-spacing: -0.035em;
   word-break: keep-all;
+}
+
+.section-body.invitation-copy {
+  display: grid;
+  gap: 4px;
 }
 
 .couple-grid {
@@ -651,11 +682,19 @@ svg {
 }
 
 .groom-card .person-heading > span {
-  color: #6f9bab;
+  color: var(--groom-color);
 }
 
 .bride-card .person-heading > span {
-  color: #bd7773;
+  color: var(--bride-color);
+}
+
+.groom-card .person-heading a {
+  color: var(--groom-color);
+}
+
+.bride-card .person-heading a {
+  color: var(--bride-color);
 }
 
 .person-card h3 {
@@ -719,7 +758,7 @@ svg {
 }
 
 .calendar-section {
-  background: #f0ece2;
+  background-color: rgb(240 236 226 / 78%);
 }
 
 .calendar-section h2 {
@@ -817,7 +856,7 @@ svg {
 }
 
 .gallery-section {
-  background: #fcfbf6;
+  background-color: rgb(252 251 246 / 74%);
 }
 
 .section-caption {
@@ -919,7 +958,7 @@ svg {
 .gallery-ink { background: linear-gradient(135deg, #706b66, #aaa299 57%, #d5c7b8); }
 
 .location-section {
-  background: #f4f1ea;
+  background-color: rgb(244 241 234 / 74%);
 }
 
 .location-hall {
@@ -930,58 +969,49 @@ svg {
 
 .map-card {
   position: relative;
-  height: 215px;
+  height: 250px;
   overflow: hidden;
   border: 1px solid #e0dbd1;
-  background:
-    linear-gradient(56deg, transparent 47%, rgb(190 183 171 / 50%) 47.3% 50%, transparent 50.3%),
-    linear-gradient(144deg, transparent 54%, rgb(190 183 171 / 42%) 54.3% 56%, transparent 56.3%),
-    #e8e6dc;
+  background: #e8e6dc;
 }
 
-.map-card > p {
-  position: absolute;
-  right: 11px;
-  bottom: 8px;
-  margin: 0;
-  color: rgb(107 100 91 / 41%);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 8px;
-  letter-spacing: 0.16em;
-}
-
-.road,
-.block {
-  position: absolute;
+.kakao-map-canvas {
   display: block;
+  width: 100%;
+  height: 100%;
+  background: #e8e6dc;
 }
 
-.road {
-  background: rgb(250 249 245 / 90%);
-}
-
-.road-one { top: 32px; left: -25px; width: 180px; height: 14px; transform: rotate(28deg); }
-.road-two { top: 122px; left: 64px; width: 260px; height: 12px; transform: rotate(-16deg); }
-.road-three { top: 83px; left: 143px; width: 13px; height: 180px; transform: rotate(24deg); }
-.block { border: 1px solid rgb(154 144 130 / 28%); background: rgb(206 201 190 / 62%); }
-.block-one { top: 22px; left: 196px; width: 62px; height: 45px; transform: rotate(13deg); }
-.block-two { top: 142px; left: 16px; width: 89px; height: 42px; transform: rotate(-8deg); }
-.block-three { top: 145px; right: 20px; width: 76px; height: 37px; transform: rotate(20deg); }
-
-.map-pin {
+.map-loading,
+.map-error {
   position: absolute;
   top: 50%;
-  left: 51%;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 9px 6px 6px;
-  border-radius: 2px;
-  color: #fff;
-  background: #6e665f;
-  box-shadow: 0 5px 13px rgb(65 57 51 / 22%);
-  font-size: 9px;
+  left: 50%;
+  margin: 0;
+  padding: 10px 13px;
+  color: #746b62;
+  background: rgb(255 255 255 / 88%);
+  box-shadow: 0 2px 9px rgb(62 55 49 / 11%);
+  font-size: 10px;
   transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.map-error {
+  color: #5f574f;
+}
+
+.map-open-link {
+  position: absolute;
+  z-index: 1;
+  right: 9px;
+  bottom: 9px;
+  padding: 7px 9px;
+  border: 1px solid rgb(72 66 58 / 15%);
+  color: #5f574f;
+  background: rgb(255 255 255 / 90%);
+  box-shadow: 0 2px 8px rgb(62 55 49 / 13%);
+  font-size: 9px;
 }
 
 .map-pin svg,
@@ -1060,7 +1090,7 @@ svg {
   border-bottom: 1px solid #ddd6ce;
   color: #81776e;
   text-align: left;
-  font-size: 10px;
+  font-size: 13px;
   line-height: 1.55;
 }
 
@@ -1076,7 +1106,7 @@ svg {
 }
 
 .accounts-section {
-  background: #fbfaf6;
+  background-color: rgb(251 250 246 / 74%);
 }
 
 .accounts-section > svg {
@@ -1159,7 +1189,12 @@ svg {
 .footer {
   padding: 56px 24px calc(48px + env(safe-area-inset-bottom));
   color: #72685e;
-  background: #eae4d9;
+  background-color: rgb(234 228 217 / 72%);
+  background-image:
+    linear-gradient(rgb(255 255 255 / 16%), rgb(255 255 255 / 16%)),
+    var(--paper-texture);
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
   text-align: center;
 }
 
@@ -1383,6 +1418,40 @@ svg {
   font-size: 11px;
   transform: translateX(-50%);
   white-space: nowrap;
+}
+
+/* src/data/invitation.ts의 theme.fonts 값으로 한 번에 변경됩니다. */
+.hero-names,
+.hero-event-date,
+.hero-event-venue,
+.story h1,
+.section-space h2,
+.story blockquote,
+.person-heading h3,
+.calendar-title,
+.countdown strong,
+.gallery-tile i,
+.footer p,
+.lightbox-art p,
+.menu-panel strong {
+  font-family: var(--font-display, "Iowan Old Style", "AppleMyungjo", "Noto Serif KR", serif);
+}
+
+.hero-kicker,
+.section-eyebrow,
+.hero-date,
+.scroll-hint,
+.calendar-weekdays,
+.gallery-tile span,
+.footer p span,
+.footer small,
+.lightbox-art span {
+  font-family: var(--font-accent, Georgia, "Times New Roman", serif);
+}
+
+/* 샘플과 같이 숫자·제목·본문까지 고운돋움으로 통일합니다. */
+.app-shell :is(button, a, p, h1, h2, h3, h4, span, strong, small, i, blockquote, input, textarea) {
+  font-family: var(--font-body, "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif);
 }
 
 @media (min-width: 680px) {
