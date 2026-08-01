@@ -150,8 +150,22 @@ svg {
   left: 25px;
 }
 
+.hero-music {
+  left: 68px;
+}
+
+.hero-music.is-playing svg {
+  animation: music-note-bounce 1.2s ease-in-out infinite;
+}
+
 .hero-menu {
   right: 25px;
+}
+
+@keyframes music-note-bounce {
+  50% {
+    transform: translateY(-1px) rotate(-4deg);
+  }
 }
 
 .menu-icon {
@@ -196,6 +210,19 @@ svg {
   color: #988c80;
   font-size: 11px;
   letter-spacing: 0;
+}
+
+.hero-draft-notice {
+  width: max-content;
+  max-width: 100%;
+  margin: 11px auto 0;
+  padding: 5px 10px;
+  border: 1px solid rgb(122 108 96 / 18%);
+  border-radius: 999px;
+  color: #867a70;
+  background: rgb(255 255 255 / 36%);
+  font-size: 9px;
+  letter-spacing: -0.02em;
 }
 
 .hero-date {
@@ -1097,14 +1124,22 @@ svg {
 }
 
 .transport-note p {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: start;
+  column-gap: 11px;
   margin: 0;
 }
 
 .transport-note strong {
-  display: inline-block;
-  width: 35px;
   color: #565049;
   font-weight: 600;
+  white-space: nowrap;
+}
+
+.transport-note p span {
+  min-width: 0;
+  word-break: keep-all;
 }
 
 .accounts-section {

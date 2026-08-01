@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
 import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
@@ -84,6 +84,15 @@ function ShareIcon() {
   )
 }
 
+function MusicIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9 17.5A2.5 2.5 0 1 1 6.5 15A2.5 2.5 0 0 1 9 17.5ZM9 17.5V7.2L18 5V14.5" />
+      <path d="M18 14.5A2.5 2.5 0 1 1 15.5 12A2.5 2.5 0 0 1 18 14.5Z" />
+    </svg>
+  )
+}
+
 function CallIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -117,8 +126,11 @@ function App() {
   const [activeGallery, setActiveGallery] = useState<number | null>(null)
   const [openAccount, setOpenAccount] = useState<'groom' | 'bride' | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false)
+  const bgmRef = useRef<HTMLAudioElement>(null)
   const calendar = useMemo(createCalendar, [])
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
+  const bgmUrl = import.meta.env.BASE_URL + 'sounds/bgm.mp3'
   const themeStyle: CSSProperties & Record<`--${string}`, string> = {
     '--paper-texture': `url("${import.meta.env.BASE_URL + invitation.theme.paperTexture}")`,
     '--font-body': invitation.theme.fonts.body,
@@ -129,6 +141,24 @@ function App() {
   useEffect(() => {
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000)
     return () => window.clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const music = bgmRef.current
+    if (!music) return
+
+    music.volume = 0.42
+    const syncMusicState = () => setIsMusicPlaying(!music.paused)
+    music.addEventListener('play', syncMusicState)
+    music.addEventListener('pause', syncMusicState)
+
+    void music.play().catch(() => setIsMusicPlaying(false))
+
+    return () => {
+      music.removeEventListener('play', syncMusicState)
+      music.removeEventListener('pause', syncMusicState)
+      music.pause()
+    }
   }, [])
 
   useEffect(() => {
@@ -203,6 +233,22 @@ function App() {
     }
   }
 
+  async function toggleBackgroundMusic() {
+    const music = bgmRef.current
+    if (!music) return
+
+    if (music.paused) {
+      try {
+        await music.play()
+      } catch {
+        setIsMusicPlaying(false)
+      }
+      return
+    }
+
+    music.pause()
+  }
+
   function mapLink(provider: 'kakao' | 'naver' | 'tmap') {
     const query = encodeURIComponent(invitation.venue.name + ' ' + invitation.venue.address)
     if (provider === 'kakao') return invitation.venue.kakaoMapUrl
@@ -211,6 +257,7 @@ function App() {
 
   return (
     <div className="app-shell" style={themeStyle}>
+      <audio ref={bgmRef} src={bgmUrl} loop preload="metadata" />
       <main className="invitation">
         <section className="hero" id="top" aria-label="청첩장 표지">
           <span className="falling-leaf leaf-one" aria-hidden="true" />
@@ -227,6 +274,7 @@ function App() {
               <span> 그리고 </span>
               {invitation.couple.bride.name}
             </p>
+            <p className="hero-draft-notice">현재 제작 중인 청첩장입니다.</p>
           </div>
 
           <div className="hero-photo">
@@ -442,9 +490,9 @@ function App() {
             <a href={mapLink('naver')} target="_blank" rel="noreferrer">네이버지도</a>
           </div>
           <div className="transport-note reveal-item">
-            <p><strong>지하철</strong> 2호선 신도림역 1번 출구 (신도림역 광장 도보 5분)</p>
-            <p><strong>셔틀버스 타는 곳</strong> 신도림역 1번 출구 앞</p>
-            <p><strong>주차</strong> 호텔 내 주차장 이용 (예식 당일 1시간 30분 무료 주차)</p>
+            <p><strong>지하철</strong><span>2호선 신도림역 1번 출구 (신도림역 광장 도보 5분)</span></p>
+            <p><strong>셔틀버스 타는 곳</strong><span>신도림역 1번 출구 앞</span></p>
+            <p><strong>주차</strong><span>호텔 내 주차장 이용 (예식 당일 1시간 30분 무료 주차)</span></p>
           </div>
         </section>
 
@@ -502,6 +550,14 @@ function App() {
       <div className="fixed-actions" aria-label="청첩장 빠른 메뉴">
         <button className="round-control hero-share" onClick={shareInvitation} aria-label="청첩장 공유">
           <ShareIcon />
+        </button>
+        <button
+          className={'round-control hero-music' + (isMusicPlaying ? ' is-playing' : '')}
+          onClick={toggleBackgroundMusic}
+          aria-label={isMusicPlaying ? '배경음악 일시정지' : '배경음악 재생'}
+          aria-pressed={isMusicPlaying}
+        >
+          <MusicIcon />
         </button>
         <button
           className="round-control hero-menu"
