@@ -10,6 +10,7 @@
 - 예식 일시와 장소, 주소 및 좌표
 - 인사말(한 줄씩 입력 가능), 갤러리 제목, 계좌번호
 - `theme.paperTexture` 배경 이미지와 `theme.fonts`의 본문·제목·영문 글꼴
+- RSVP Google Sheets 저장 주소(`rsvp.googleScriptUrl`)
 
 갤러리는 현재 저작권 문제 없는 추상 색면 자리표시자입니다. 실제 사진을 넣을 때는 public/images 폴더에 사진을 넣고, src/App.tsx의 gallery-tile 배경을 해당 파일로 바꾸면 됩니다. 배포 전에 실제 계좌번호와 전화번호를 다시 확인하세요.
 
@@ -35,6 +36,6 @@
 
 워크플로는 저장소 이름을 자동으로 감지해 프로젝트 페이지 주소에서도 정적 파일 경로가 깨지지 않도록 설정되어 있습니다. 사용자/조직 루트 페이지나 사용자 도메인을 사용할 때에는 vite.config.ts의 base 값을 '/'로 유지하면 됩니다.
 
-## 알아둘 점
+## RSVP 응답 저장
 
-GitHub Pages는 정적 호스팅이라 방명록이나 RSVP 응답을 저장할 수 없습니다. 그런 기능이 필요하면 Google Forms, Typeform, Notion Form 등의 외부 폼 링크를 추가하면 됩니다.
+RSVP는 기본적으로 숨겨져 있습니다. `src/data/invitation.ts`의 `rsvp.enabled`를 `true`로 바꾸면 청첩장을 처음 열 때 RSVP 팝업이 표시됩니다. 응답은 `rsvp.googleScriptUrl`에 연결한 Google Apps Script 웹 앱을 통해 Google Sheets에 저장됩니다. 설정은 [google-apps-script/README.md](google-apps-script/README.md)를 따라 한 뒤, `src/data/invitation.ts`에 `/exec` 주소를 입력하면 됩니다.

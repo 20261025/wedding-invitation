@@ -6,7 +6,7 @@ export const invitation = {
     title: '김민준 ♥ 정희선 결혼합니다',
     description: '2026년 10월 25일 일요일 오후 12시 30분, 라마다 서울 신도림 호텔 2층 그랜드볼룸',
     siteUrl: 'https://20261025.github.io/wedding-invitation/',
-    image: 'images/hero-wedding.png',
+    image: 'images/main.jpeg',
     imageAlt: '민준과 희선의 웨딩 사진',
   },
   theme: {
@@ -43,6 +43,12 @@ export const invitation = {
   },
   weddingDate: '2026-10-25T12:30:00+09:00',
   displayDate: '2026년 10월 25일 일요일 오후 12시 30분',
+  rsvp: {
+    // true로 바꾸면 청첩장 최초 진입 시 RSVP 팝업이 표시됩니다.
+    enabled: false,
+    // Google Apps Script 웹 앱의 /exec 주소를 넣어 주세요. 설정 방법은 google-apps-script/README.md를 참고하세요.
+    googleScriptUrl: '',
+  },
   venue: {
     name: '라마다 서울 신도림 호텔',
     hall: '2층 그랜드볼룸',

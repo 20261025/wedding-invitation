@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, type FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
 import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
@@ -8,6 +8,14 @@ type Countdown = {
   hours: string
   minutes: string
   seconds: string
+}
+
+type Rsvp = {
+  name: string
+  attendance: 'attend' | 'absent'
+  guests: string
+  meal: string
+  message: string
 }
 
 const navigation = [
@@ -126,8 +134,19 @@ function App() {
   const [activeGallery, setActiveGallery] = useState<number | null>(null)
   const [openAccount, setOpenAccount] = useState<'groom' | 'bride' | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
+  const [isRsvpOpen, setIsRsvpOpen] = useState(invitation.rsvp.enabled)
+  const [isRsvpSubmitting, setIsRsvpSubmitting] = useState(false)
+  const [rsvpError, setRsvpError] = useState<string | null>(null)
+  const [rsvp, setRsvp] = useState<Rsvp>({
+    name: '',
+    attendance: 'attend',
+    guests: '1',
+    meal: '식사 예정',
+    message: '',
+  })
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const bgmRef = useRef<HTMLAudioElement>(null)
+  const hasStartedMusicRef = useRef(false)
   const calendar = useMemo(createCalendar, [])
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
   const bgmUrl = import.meta.env.BASE_URL + 'sounds/bgm.mp3'
@@ -152,9 +171,24 @@ function App() {
     music.addEventListener('play', syncMusicState)
     music.addEventListener('pause', syncMusicState)
 
-    void music.play().catch(() => setIsMusicPlaying(false))
+    const playBackgroundMusic = async () => {
+      try {
+        await music.play()
+        hasStartedMusicRef.current = true
+      } catch {
+        setIsMusicPlaying(false)
+      }
+    }
+
+    const playOnFirstInteraction = () => {
+      if (!hasStartedMusicRef.current) void playBackgroundMusic()
+    }
+
+    void playBackgroundMusic()
+    window.addEventListener('pointerdown', playOnFirstInteraction, { once: true })
 
     return () => {
+      window.removeEventListener('pointerdown', playOnFirstInteraction)
       music.removeEventListener('play', syncMusicState)
       music.removeEventListener('pause', syncMusicState)
       music.pause()
@@ -193,7 +227,16 @@ function App() {
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [activeGallery])
 
-  async function copyText(value: string, label: string) {
+  useEffect(() => {
+    if (!isRsvpOpen) return
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsRsvpOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    return () => window.removeEventListener('keydown', closeOnEscape)
+  }, [isRsvpOpen])
+
+  async function copyText(value: string, label: string, successMessage = label + '가 복사되었습니다.') {
     try {
       if (navigator.clipboard && window.isSecureContext) {
         await navigator.clipboard.writeText(value)
@@ -207,7 +250,7 @@ function App() {
         document.execCommand('copy')
         field.remove()
       }
-      setCopied(label)
+      setCopied(successMessage)
       window.setTimeout(() => setCopied(null), 2200)
     } catch {
       window.prompt('아래 내용을 복사해 주세요.', value)
@@ -249,6 +292,49 @@ function App() {
     music.pause()
   }
 
+  function closeRsvp() {
+    setIsRsvpOpen(false)
+    setRsvpError(null)
+  }
+
+  async function submitRsvp(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!invitation.rsvp.googleScriptUrl) {
+      setRsvpError('Google Sheets 연결 주소를 설정한 뒤 이용할 수 있어요.')
+      return
+    }
+
+    const attendance = rsvp.attendance === 'attend' ? '참석' : '불참'
+    const payload = {
+      name: rsvp.name.trim(),
+      attendance,
+      guests: rsvp.attendance === 'attend' ? rsvp.guests : '',
+      meal: rsvp.attendance === 'attend' ? rsvp.meal : '',
+      message: rsvp.message.trim(),
+      submittedAt: new Date().toISOString(),
+      pageUrl: window.location.href,
+    }
+
+    setIsRsvpSubmitting(true)
+    setRsvpError(null)
+    try {
+      // Apps Script는 다른 도메인에서 동작하므로, 요청을 전송만 하고 응답은 읽지 않습니다.
+      await fetch(invitation.rsvp.googleScriptUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+      })
+      setCopied('RSVP 응답을 전송했습니다.')
+      window.setTimeout(() => setCopied(null), 2200)
+      closeRsvp()
+    } catch {
+      setRsvpError('전송하지 못했어요. 네트워크 연결을 확인한 뒤 다시 시도해 주세요.')
+    } finally {
+      setIsRsvpSubmitting(false)
+    }
+  }
+
   function mapLink(provider: 'kakao' | 'naver' | 'tmap') {
     const query = encodeURIComponent(invitation.venue.name + ' ' + invitation.venue.address)
     if (provider === 'kakao') return invitation.venue.kakaoMapUrl
@@ -257,7 +343,7 @@ function App() {
 
   return (
     <div className="app-shell" style={themeStyle}>
-      <audio ref={bgmRef} src={bgmUrl} loop preload="metadata" />
+      <audio ref={bgmRef} src={bgmUrl} loop preload="metadata" autoPlay />
       <main className="invitation">
         <section className="hero" id="top" aria-label="청첩장 표지">
           <span className="falling-leaf leaf-one" aria-hidden="true" />
@@ -599,6 +685,98 @@ function App() {
         </div>
       )}
 
+      {invitation.rsvp.enabled && isRsvpOpen && (
+        <div
+          className="rsvp-layer"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="rsvp-modal-heading"
+          onClick={closeRsvp}
+        >
+          <form className="rsvp-panel" onSubmit={submitRsvp} onClick={(event) => event.stopPropagation()}>
+            <button className="rsvp-close" type="button" onClick={closeRsvp} aria-label="참석 여부 전달 닫기">
+              <CloseIcon />
+            </button>
+            <p className="section-eyebrow">RSVP</p>
+            <h2 id="rsvp-modal-heading">참석 여부 전달</h2>
+            <p className="rsvp-description">소중한 날, 함께해 주실 수 있는지 미리 알려주세요.</p>
+
+            <label className="rsvp-field">
+              <span>성함</span>
+              <input
+                required
+                value={rsvp.name}
+                onChange={(event) => setRsvp({ ...rsvp, name: event.target.value })}
+                placeholder="성함을 입력해 주세요"
+                autoComplete="name"
+              />
+            </label>
+
+            <fieldset className="rsvp-choice">
+              <legend>참석 여부</legend>
+              <label>
+                <input
+                  type="radio"
+                  name="attendance"
+                  checked={rsvp.attendance === 'attend'}
+                  onChange={() => setRsvp({ ...rsvp, attendance: 'attend' })}
+                />
+                <span>참석할게요</span>
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  name="attendance"
+                  checked={rsvp.attendance === 'absent'}
+                  onChange={() => setRsvp({ ...rsvp, attendance: 'absent' })}
+                />
+                <span>아쉽지만 불참할게요</span>
+              </label>
+            </fieldset>
+
+            {rsvp.attendance === 'attend' && (
+              <div className="rsvp-selects">
+                <label className="rsvp-field">
+                  <span>참석 인원</span>
+                  <select value={rsvp.guests} onChange={(event) => setRsvp({ ...rsvp, guests: event.target.value })}>
+                    {[1, 2, 3, 4, 5].map((guest) => <option value={guest} key={guest}>{guest}명</option>)}
+                    <option value="6명 이상">6명 이상</option>
+                  </select>
+                </label>
+                <label className="rsvp-field">
+                  <span>식사 여부</span>
+                  <select value={rsvp.meal} onChange={(event) => setRsvp({ ...rsvp, meal: event.target.value })}>
+                    <option>식사 예정</option>
+                    <option>식사하지 않음</option>
+                  </select>
+                </label>
+              </div>
+            )}
+
+            <label className="rsvp-field rsvp-message">
+              <span>전하고 싶은 말 <em>선택</em></span>
+              <textarea
+                value={rsvp.message}
+                onChange={(event) => setRsvp({ ...rsvp, message: event.target.value })}
+                placeholder="축하의 말을 남겨 주세요"
+                rows={3}
+              />
+            </label>
+
+            {rsvpError && <p className="rsvp-error" role="alert">{rsvpError}</p>}
+            <button className="rsvp-submit" type="submit" disabled={isRsvpSubmitting}>
+              <MessageIcon />
+              {isRsvpSubmitting ? '응답 전송 중...' : '참석 여부 전달하기'}
+            </button>
+            <p className="rsvp-help">
+              {invitation.rsvp.googleScriptUrl
+                ? '응답은 Google Sheets에 저장됩니다.'
+                : 'Google Sheets 연결 주소를 설정하면 응답이 저장됩니다.'}
+            </p>
+          </form>
+        </div>
+      )}
+
       {activeGallery !== null && (
         <div
           className="lightbox"
@@ -621,7 +799,7 @@ function App() {
         </div>
       )}
 
-      {copied && <div className="toast" role="status">{copied}가 복사되었습니다.</div>}
+      {copied && <div className="toast" role="status">{copied}</div>}
     </div>
   )
 }

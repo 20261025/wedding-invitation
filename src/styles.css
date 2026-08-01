@@ -1142,6 +1142,32 @@ svg {
   word-break: keep-all;
 }
 
+.rsvp-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgb(128 108 94 / 27%);
+  color: #66594f;
+  background: rgb(255 255 255 / 48%);
+  box-shadow: 0 4px 12px rgb(76 65 55 / 6%);
+  font-size: 11px;
+  transition: background 180ms ease, transform 180ms ease;
+}
+
+.rsvp-submit:hover {
+  background: rgb(255 255 255 / 78%);
+  transform: translateY(-1px);
+}
+
+.rsvp-submit svg {
+  width: 15px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+}
+
 .accounts-section {
   background-color: rgb(251 250 246 / 74%);
 }
@@ -1272,7 +1298,8 @@ svg {
 }
 
 .menu-layer,
-.lightbox {
+.lightbox,
+.rsvp-layer {
   position: fixed;
   z-index: 20;
   inset: 0;
@@ -1297,7 +1324,8 @@ svg {
 }
 
 .menu-close,
-.lightbox-close {
+.lightbox-close,
+.rsvp-close {
   position: absolute;
   display: grid;
   place-items: center;
@@ -1313,7 +1341,8 @@ svg {
 }
 
 .menu-close svg,
-.lightbox-close svg {
+.lightbox-close svg,
+.rsvp-close svg {
   width: 18px;
   stroke: currentColor;
   stroke-linecap: round;
@@ -1391,6 +1420,195 @@ svg {
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.35;
+}
+
+.rsvp-layer {
+  z-index: 35;
+  overflow-y: auto;
+}
+
+.rsvp-panel {
+  position: relative;
+  width: min(100%, 430px);
+  margin: auto;
+  padding: 45px 26px 25px;
+  color: #5d5650;
+  background-color: #f9f6ef;
+  background-image:
+    linear-gradient(rgb(255 255 255 / 24%), rgb(255 255 255 / 24%)),
+    var(--paper-texture);
+  background-repeat: no-repeat, repeat-y;
+  background-size: 100% 100%, 100% auto;
+  box-shadow: 0 20px 55px rgb(27 23 20 / 20%);
+}
+
+.rsvp-close {
+  top: 11px;
+  right: 11px;
+  width: 36px;
+  height: 36px;
+}
+
+.rsvp-panel > .section-eyebrow,
+.rsvp-panel > h2,
+.rsvp-description,
+.rsvp-help {
+  text-align: center;
+}
+
+.rsvp-panel > h2 {
+  margin-top: 10px;
+  font-size: 21px;
+}
+
+.rsvp-description {
+  margin: 14px 0 25px;
+  color: #877d74;
+  font-size: 10px;
+  line-height: 1.65;
+}
+
+.rsvp-field {
+  display: grid;
+  gap: 8px;
+  color: #696159;
+  font-size: 11px;
+  text-align: left;
+}
+
+.rsvp-field + .rsvp-field {
+  margin-top: 18px;
+}
+
+.rsvp-field > span {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.rsvp-field em {
+  color: #aaa096;
+  font-size: 9px;
+  font-style: normal;
+}
+
+.rsvp-field input,
+.rsvp-field select,
+.rsvp-field textarea {
+  width: 100%;
+  border: 1px solid #ded7ce;
+  border-radius: 0;
+  outline: none;
+  color: #514a44;
+  background: rgb(255 255 255 / 56%);
+  font-size: 12px;
+}
+
+.rsvp-field input,
+.rsvp-field select {
+  height: 42px;
+  padding: 0 12px;
+}
+
+.rsvp-field textarea {
+  min-height: 78px;
+  padding: 11px 12px;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.rsvp-field input::placeholder,
+.rsvp-field textarea::placeholder {
+  color: #afa69d;
+}
+
+.rsvp-field input:focus,
+.rsvp-field select:focus,
+.rsvp-field textarea:focus {
+  border-color: #b9a697;
+  box-shadow: 0 0 0 3px rgb(185 166 151 / 13%);
+}
+
+.rsvp-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 20px 0 0;
+  padding: 0;
+  border: 0;
+}
+
+.rsvp-choice legend {
+  grid-column: 1 / -1;
+  margin-bottom: 8px;
+  color: #696159;
+  font-size: 11px;
+}
+
+.rsvp-choice label {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid #ded7ce;
+  color: #746b63;
+  background: rgb(255 255 255 / 35%);
+  font-size: 10px;
+}
+
+.rsvp-choice input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: #9a7e70;
+}
+
+.rsvp-choice label:has(input:checked) {
+  border-color: #bba495;
+  color: #5e5148;
+  background: rgb(255 255 255 / 76%);
+}
+
+.rsvp-selects {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.rsvp-message {
+  margin-top: 18px;
+}
+
+.rsvp-submit {
+  width: 100%;
+  margin-top: 21px;
+  padding: 14px;
+}
+
+.rsvp-submit:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+.rsvp-error {
+  margin: 17px 0 -7px;
+  padding: 10px;
+  border: 1px solid rgb(181 118 106 / 28%);
+  color: #9b5d58;
+  background: rgb(255 246 244 / 62%);
+  font-size: 10px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.rsvp-help {
+  margin: 12px 0 0;
+  color: #978d84;
+  font-size: 9px;
+  line-height: 1.55;
 }
 
 .lightbox {
@@ -1487,7 +1705,7 @@ svg {
 }
 
 /* 샘플과 같이 숫자·제목·본문까지 고운돋움으로 통일합니다. */
-.app-shell :is(button, a, p, h1, h2, h3, h4, span, strong, small, i, blockquote, input, textarea) {
+.app-shell :is(button, a, p, h1, h2, h3, h4, span, strong, small, i, blockquote, input, select, textarea) {
   font-family: var(--font-body, "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif);
 }
 
