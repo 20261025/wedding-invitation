@@ -12,13 +12,8 @@ export const invitation = {
     imageAlt: '민준과 희선의 웨딩 사진',
   },
   kakaoShare: {
-    // 카카오맵과 같은 카카오 Developers 앱을 쓰는 경우 그대로 두면 됩니다.
-    // 다른 앱에서 메시지 템플릿을 만들었다면 그 앱의 JavaScript 키로 바꿔 주세요.
     javascriptKey: kakaoJavaScriptKey,
-    // 카카오 Developers > 도구 > 메시지 템플릿에서 확인한 숫자 ID를 입력하세요.
     templateId: 135872,
-    // 템플릿에 ${title}처럼 사용자 인자를 만들었다면 이름과 값을 동일하게 입력하세요.
-    // 예: { title: '김민준 ♥ 정희선 결혼합니다', date: '2026년 10월 25일' }
     templateArgs: {} as Record<string, string>,
   },
   theme: {
@@ -34,22 +29,22 @@ export const invitation = {
       name: '김민준',
       englishName: 'MINJUN',
       portrait: '', // 예: '/images/groom.jpg'
-      profile: ['93년 8월 3일', '서울 강동구', 'IT 개발자 💻'],
+      profile: ['95년 6월 21일', 'IT 개발자 '],
       message: '저희 행복하게',
-      phone: '010-0000-0000',
-      father: '김아버지',
-      mother: '이어머니',
+      phone: '010-7176-4662',
+      father: '김용덕',
+      mother: '진향미',
       familyRole: '장남',
     },
     bride: {
       name: '정희선',
       englishName: 'HEESUN',
       portrait: '', // 예: '/images/bride.jpg'
-      profile: ['95년 8월 3일', '경기도 용인', '디자이너 🎨'],
+      profile: ['91년 7월 9일', 'IT 개발자 💻'],
       message: '잘 살겠습니다 :)',
-      phone: '010-0000-0000',
-      father: '이아버지',
-      mother: '박어머니',
+      phone: '010-6676-3058',
+      father: '정훈채',
+      mother: '하순심',
       familyRole: '장녀',
     },
   },
@@ -99,12 +94,12 @@ export const invitation = {
   ],
   accounts: {
     groom: [
-      { owner: '김하늘', bank: '국민은행', number: '000000-00-000000' },
-      { owner: '김아버지', bank: '신한은행', number: '000-000-000000' },
+      { owner: '김민준', bank: '국민은행', number: '000000-00-000000' },
+      /*{ owner: '김아버지', bank: '신한은행', number: '000-000-000000' },*/
     ],
     bride: [
-      { owner: '이바다', bank: '우리은행', number: '0000-000-000000' },
-      { owner: '이아버지', bank: '하나은행', number: '000-000000-00000' },
+      { owner: '정희선', bank: '카카오뱅크', number: '0000-000-000000' },
+      /*{ owner: '이아버지', bank: '하나은행', number: '000-000000-00000' },*/
     ],
   },
 }
