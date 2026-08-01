@@ -442,8 +442,9 @@ function App() {
             <a href={mapLink('naver')} target="_blank" rel="noreferrer">네이버지도</a>
           </div>
           <div className="transport-note reveal-item">
-            <p><strong>지하철</strong> 신도림역 1번 출구에서 도보 5분</p>
-            <p><strong>주차</strong> 예식 당일 3시간 무료 주차</p>
+            <p><strong>지하철</strong> 2호선 신도림역 1번 출구 (신도림역 광장 도보 5분)</p>
+            <p><strong>셔틀버스 타는 곳</strong> 신도림역 1번 출구 앞</p>
+            <p><strong>주차</strong> 호텔 내 주차장 이용 (예식 당일 1시간 30분 무료 주차)</p>
           </div>
         </section>
 

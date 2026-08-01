@@ -1,13 +1,13 @@
 export const invitation = {
-  siteTitle: '하늘과 바다의 결혼식',
-  heroImage: 'images/hero-wedding.png',
+  siteTitle: '민준과 희선의 결혼식',
+  heroImage: 'images/main.jpeg',
   heroImageAlt: '두 사람의 웨딩 사진',
   social: {
-    title: '김하늘 ♥ 이바다 결혼합니다',
-    description: '2026년 10월 25일 일요일 오후 12시 30분, 라온 컨벤션 2층 가든 홀',
+    title: '김민준 ♥ 정희선 결혼합니다',
+    description: '2026년 10월 25일 일요일 오후 12시 30분, 라마다 서울 신도림 호텔 2층 그랜드볼룸',
     siteUrl: 'https://20261025.github.io/wedding-invitation/',
     image: 'images/hero-wedding.png',
-    imageAlt: '김하늘과 이바다의 웨딩 사진',
+    imageAlt: '민준과 희선의 웨딩 사진',
   },
   theme: {
     paperTexture: 'images/paper-texture.png',
@@ -19,8 +19,8 @@ export const invitation = {
   },
   couple: {
     groom: {
-      name: '김하늘',
-      englishName: 'HANEUL',
+      name: '김민준',
+      englishName: 'MINJUN',
       portrait: '', // 예: '/images/groom.jpg'
       profile: ['93년 8월 3일', '서울 강동구', 'IT 개발자 💻'],
       message: '저희 행복하게',
@@ -30,8 +30,8 @@ export const invitation = {
       familyRole: '장남',
     },
     bride: {
-      name: '이바다',
-      englishName: 'BADA',
+      name: '정희선',
+      englishName: 'HEESUN',
       portrait: '', // 예: '/images/bride.jpg'
       profile: ['95년 8월 3일', '경기도 용인', '디자이너 🎨'],
       message: '잘 살겠습니다 :)',
@@ -44,10 +44,10 @@ export const invitation = {
   weddingDate: '2026-10-25T12:30:00+09:00',
   displayDate: '2026년 10월 25일 일요일 오후 12시 30분',
   venue: {
-    name: '라온 컨벤션',
-    hall: '2층 가든 홀',
+    name: '라마다 서울 신도림 호텔',
+    hall: '2층 그랜드볼룸',
     address: '서울시 구로구 경인로 624',
-    detail: '지하철 1호선 신도림역 1번 출구 도보 5분',
+    detail: '',
     latitude: '37.50623951983282',
     longitude: '126.88539450791446',
     kakaoMapAppKey: 'bf737c0f633d3d0ce522d13dd8a7db30',
