@@ -1,3 +1,5 @@
+const kakaoJavaScriptKey = 'bf737c0f633d3d0ce522d13dd8a7db30'
+
 export const invitation = {
   siteTitle: '민준과 희선의 결혼식',
   heroImage: 'images/main.jpeg',
@@ -8,6 +10,16 @@ export const invitation = {
     siteUrl: 'https://20261025.github.io/wedding-invitation/',
     image: 'images/main.jpeg',
     imageAlt: '민준과 희선의 웨딩 사진',
+  },
+  kakaoShare: {
+    // 카카오맵과 같은 카카오 Developers 앱을 쓰는 경우 그대로 두면 됩니다.
+    // 다른 앱에서 메시지 템플릿을 만들었다면 그 앱의 JavaScript 키로 바꿔 주세요.
+    javascriptKey: kakaoJavaScriptKey,
+    // 카카오 Developers > 도구 > 메시지 템플릿에서 확인한 숫자 ID를 입력하세요.
+    templateId: 135872,
+    // 템플릿에 ${title}처럼 사용자 인자를 만들었다면 이름과 값을 동일하게 입력하세요.
+    // 예: { title: '김민준 ♥ 정희선 결혼합니다', date: '2026년 10월 25일' }
+    templateArgs: {} as Record<string, string>,
   },
   theme: {
     paperTexture: 'images/paper-texture.png',
@@ -56,7 +68,7 @@ export const invitation = {
     detail: '',
     latitude: '37.50623951983282',
     longitude: '126.88539450791446',
-    kakaoMapAppKey: 'bf737c0f633d3d0ce522d13dd8a7db30',
+    kakaoMapAppKey: kakaoJavaScriptKey,
     kakaoMapUrl: 'https://place.map.kakao.com/1212235250',
   },
   poem: [

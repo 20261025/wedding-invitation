@@ -146,12 +146,8 @@ svg {
   backdrop-filter: blur(8px);
 }
 
-.hero-share {
-  left: 25px;
-}
-
 .hero-music {
-  left: 68px;
+  left: 25px;
 }
 
 .hero-music.is-playing svg {
@@ -1297,6 +1293,68 @@ svg {
   font-size: 9px;
 }
 
+.footer .kakao-share-button,
+.footer .invitation-link-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(100%, 240px);
+  min-height: 44px;
+  padding: 12px 18px;
+  font-size: 11px;
+}
+
+.footer .kakao-share-button {
+  gap: 8px;
+  margin: 26px auto 0;
+  border: 0;
+  border-radius: 4px;
+  color: #3a2928;
+  background: #fee500;
+  box-shadow: 0 4px 12px rgb(76 62 43 / 12%);
+  font-weight: 600;
+}
+
+.footer .kakao-share-button svg {
+  width: 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.footer .invitation-link-button {
+  margin: 10px auto 0;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--groom-color);
+  box-shadow: 0 4px 12px rgb(56 92 105 / 16%);
+}
+
+.scroll-top-control {
+  position: fixed;
+  z-index: 15;
+  right: max(20px, calc((100vw - 500px) / 2 + 20px));
+  bottom: calc(22px + env(safe-area-inset-bottom));
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgb(93 81 69 / 20%);
+  border-radius: 50%;
+  color: #6f6358;
+  background: rgb(252 250 246 / 86%);
+  box-shadow: 0 5px 16px rgb(61 52 43 / 14%);
+  backdrop-filter: blur(8px);
+}
+
+.scroll-top-control span {
+  font-family: var(--font-body, sans-serif);
+  font-size: 14px;
+  line-height: 1;
+}
+
 .menu-layer,
 .lightbox,
 .rsvp-layer {
@@ -1399,27 +1457,6 @@ svg {
   color: #aa9386;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 9px;
-}
-
-.menu-share {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 25px;
-  padding: 13px;
-  color: #74695f;
-  background: #ece7dd;
-  font-size: 11px;
-}
-
-.menu-share svg {
-  width: 14px;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.35;
 }
 
 .rsvp-layer {

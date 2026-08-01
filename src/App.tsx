@@ -18,6 +18,23 @@ type Rsvp = {
   message: string
 }
 
+type KakaoShareSdk = {
+  init: (javascriptKey: string) => void
+  isInitialized: () => boolean
+  Share: {
+    sendCustom: (options: {
+      templateId: number
+      templateArgs?: Record<string, string>
+    }) => void
+  }
+}
+
+declare global {
+  interface Window {
+    Kakao?: KakaoShareSdk
+  }
+}
+
 const navigation = [
   { label: '초대', id: 'invitation' },
   { label: '예식일', id: 'calendar' },
@@ -25,6 +42,45 @@ const navigation = [
   { label: '오시는 길', id: 'location' },
   { label: '마음 전하기', id: 'accounts' },
 ]
+
+const kakaoShareSdkUrl = 'https://t1.kakaocdn.net/kakao_js_sdk/2.8.0/kakao.min.js'
+
+function loadKakaoShareSdk(javascriptKey: string) {
+  return new Promise<KakaoShareSdk>((resolve, reject) => {
+    const initialize = () => {
+      if (!window.Kakao) {
+        reject(new Error('카카오톡 공유 SDK를 불러오지 못했습니다.'))
+        return
+      }
+
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(javascriptKey)
+      }
+      resolve(window.Kakao)
+    }
+
+    if (window.Kakao) {
+      initialize()
+      return
+    }
+
+    const scriptId = 'kakao-share-sdk'
+    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null
+    if (existingScript) {
+      existingScript.addEventListener('load', initialize, { once: true })
+      existingScript.addEventListener('error', () => reject(new Error('카카오톡 공유 SDK를 불러오지 못했습니다.')), { once: true })
+      return
+    }
+
+    const script = document.createElement('script')
+    script.id = scriptId
+    script.async = true
+    script.src = kakaoShareSdkUrl
+    script.addEventListener('load', initialize, { once: true })
+    script.addEventListener('error', () => reject(new Error('카카오톡 공유 SDK를 불러오지 못했습니다.')), { once: true })
+    document.head.appendChild(script)
+  })
+}
 
 function pad(value: number) {
   return String(value).padStart(2, '0')
@@ -77,18 +133,6 @@ function MenuIcon() {
       <i />
       <i />
     </span>
-  )
-}
-
-function ShareIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="18" cy="5" r="2.5" />
-      <circle cx="6" cy="12" r="2.5" />
-      <circle cx="18" cy="19" r="2.5" />
-      <path d="M8.2 10.9L15.8 6.1" />
-      <path d="M8.2 13.1L15.8 17.9" />
-    </svg>
   )
 }
 
@@ -145,6 +189,7 @@ function App() {
     message: '',
   })
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
+  const [showScrollTop, setShowScrollTop] = useState(false)
   const bgmRef = useRef<HTMLAudioElement>(null)
   const hasStartedMusicRef = useRef(false)
   const calendar = useMemo(createCalendar, [])
@@ -160,6 +205,13 @@ function App() {
   useEffect(() => {
     const timer = window.setInterval(() => setCountdown(getCountdown()), 1000)
     return () => window.clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const updateScrollTopVisibility = () => setShowScrollTop(window.scrollY > 560)
+    updateScrollTopVisibility()
+    window.addEventListener('scroll', updateScrollTopVisibility, { passive: true })
+    return () => window.removeEventListener('scroll', updateScrollTopVisibility)
   }, [])
 
   useEffect(() => {
@@ -258,6 +310,24 @@ function App() {
   }
 
   async function shareInvitation() {
+    const { javascriptKey, templateId, templateArgs } = invitation.kakaoShare
+    // 카카오 템플릿은 로컬 개발 환경에서만 시험합니다.
+    // 배포된 청첩장은 아래의 기본 링크 공유를 계속 사용합니다.
+    if (import.meta.env.DEV && javascriptKey && templateId) {
+      try {
+        const Kakao = await loadKakaoShareSdk(javascriptKey)
+        Kakao.Share.sendCustom({
+          templateId,
+          ...(Object.keys(templateArgs).length > 0 ? { templateArgs } : {}),
+        })
+        return
+      } catch {
+        setCopied('카카오톡 공유를 열지 못했습니다. 카카오 설정을 확인해 주세요.')
+        window.setTimeout(() => setCopied(null), 3000)
+        return
+      }
+    }
+
     const shareData = {
       title: invitation.social.title,
       text: invitation.social.description,
@@ -629,14 +699,22 @@ function App() {
           <FlowerMark />
           <p>{invitation.couple.groom.name} <span>and</span> {invitation.couple.bride.name}</p>
           <small>함께해 주시는 모든 마음을 오래 기억하겠습니다.</small>
-          <button onClick={() => scrollToSection('top')}>맨 위로</button>
+          {import.meta.env.DEV && (
+            <button className="kakao-share-button" onClick={shareInvitation}>
+              <MessageIcon />
+              카카오톡으로 공유하기
+            </button>
+          )}
+          <button
+            className="invitation-link-button"
+            onClick={() => copyText(invitation.social.siteUrl, '청첩장 주소')}
+          >
+            청첩장 주소 복사하기
+          </button>
         </footer>
       </main>
 
       <div className="fixed-actions" aria-label="청첩장 빠른 메뉴">
-        <button className="round-control hero-share" onClick={shareInvitation} aria-label="청첩장 공유">
-          <ShareIcon />
-        </button>
         <button
           className={'round-control hero-music' + (isMusicPlaying ? ' is-playing' : '')}
           onClick={toggleBackgroundMusic}
@@ -653,6 +731,12 @@ function App() {
           <MenuIcon />
         </button>
       </div>
+
+      {showScrollTop && (
+        <button className="scroll-top-control" onClick={() => scrollToSection('top')} aria-label="맨 위로 이동">
+          <span aria-hidden="true">↑</span>
+        </button>
+      )}
 
       {menuOpen && (
         <div className="menu-layer" role="dialog" aria-modal="true" aria-label="청첩장 메뉴">
@@ -677,10 +761,6 @@ function App() {
                 </button>
               ))}
             </nav>
-            <button className="menu-share" onClick={shareInvitation}>
-              <ShareIcon />
-              청첩장 공유하기
-            </button>
           </div>
         </div>
       )}

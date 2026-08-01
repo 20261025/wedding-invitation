@@ -11,6 +11,7 @@
 - 인사말(한 줄씩 입력 가능), 갤러리 제목, 계좌번호
 - `theme.paperTexture` 배경 이미지와 `theme.fonts`의 본문·제목·영문 글꼴
 - RSVP Google Sheets 저장 주소(`rsvp.googleScriptUrl`)
+- 카카오톡 사용자 정의 템플릿 ID와 사용자 인자(`kakaoShare`)
 
 갤러리는 현재 저작권 문제 없는 추상 색면 자리표시자입니다. 실제 사진을 넣을 때는 public/images 폴더에 사진을 넣고, src/App.tsx의 gallery-tile 배경을 해당 파일로 바꾸면 됩니다. 배포 전에 실제 계좌번호와 전화번호를 다시 확인하세요.
 
@@ -39,3 +40,16 @@
 ## RSVP 응답 저장
 
 RSVP는 기본적으로 숨겨져 있습니다. `src/data/invitation.ts`의 `rsvp.enabled`를 `true`로 바꾸면 청첩장을 처음 열 때 RSVP 팝업이 표시됩니다. 응답은 `rsvp.googleScriptUrl`에 연결한 Google Apps Script 웹 앱을 통해 Google Sheets에 저장됩니다. 설정은 [google-apps-script/README.md](google-apps-script/README.md)를 따라 한 뒤, `src/data/invitation.ts`에 `/exec` 주소를 입력하면 됩니다.
+
+## 카카오톡 사용자 정의 템플릿 공유
+
+상단 공유 버튼은 로컬 개발 서버에서만 `kakaoShare.templateId`의 카카오톡 사용자 정의 템플릿으로 공유합니다. 배포된 청첩장에서는 기존의 일반 링크 공유를 유지합니다. `templateId`는 카카오 Developers의 **도구 > 메시지 템플릿**에서 확인한 숫자입니다. 템플릿에서 `${title}`처럼 사용자 인자를 사용했다면, `templateArgs`에 같은 이름과 값을 넣어야 합니다.
+
+`kakaoShare.javascriptKey`는 현재 카카오맵에 사용 중인 키로 설정돼 있습니다. 메시지 템플릿을 같은 카카오 Developers 앱에서 만들었다면 그대로 사용할 수 있습니다. 다른 앱에서 만들었다면 해당 앱의 **JavaScript 키**로 바꾸세요.
+
+카카오 Developers에서 아래 주소를 **JavaScript SDK 도메인**과 **제품 링크 관리 > 웹 도메인**에 각각 등록해야 합니다.
+
+- 배포: `https://20261025.github.io`
+- 현재 로컬 미리보기: `http://127.0.0.1:5174`
+
+로컬 주소는 브라우저 주소와 한 글자까지 같아야 합니다. 예를 들어 `localhost:5174`로 열었다면 `http://localhost:5174`도 별도로 등록해야 합니다. 자세한 조건은 [카카오톡 공유 JavaScript 공식 문서](https://developers.kakao.com/docs/ko/kakaotalk-share/js-link)를 참고하세요.
