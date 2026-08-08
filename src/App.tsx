@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
 import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
@@ -185,6 +185,9 @@ function App() {
   const [countdown, setCountdown] = useState(getCountdown)
   const [activeGallery, setActiveGallery] = useState<number | null>(null)
   const [galleryIndex, setGalleryIndex] = useState(0)
+  const [galleryFocusIndex, setGalleryFocusIndex] = useState<number | null>(0)
+  const [isGalleryDragging, setIsGalleryDragging] = useState(false)
+  const [isGalleryLoopJumping, setIsGalleryLoopJumping] = useState(false)
   const [openAccount, setOpenAccount] = useState<'groom' | 'bride' | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
   const [isRsvpOpen, setIsRsvpOpen] = useState(invitation.rsvp.enabled)
@@ -202,7 +205,14 @@ function App() {
   const bgmRef = useRef<HTMLAudioElement>(null)
   const galleryTrackRef = useRef<HTMLDivElement>(null)
   const galleryLoopTimerRef = useRef<number | null>(null)
+  const galleryNavigationTimerRef = useRef<number | null>(null)
   const galleryIsReadyRef = useRef(false)
+  const galleryIsNavigatingRef = useRef(false)
+  const galleryIsDraggingRef = useRef(false)
+  const galleryDragStartXRef = useRef(0)
+  const galleryDragStartScrollRef = useRef(0)
+  const galleryDidDragRef = useRef(false)
+  const galleryLoopJumpFrameRef = useRef<number | null>(null)
   const hasStartedMusicRef = useRef(false)
   const calendar = useMemo(createCalendar, [])
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
@@ -308,6 +318,8 @@ function App() {
       window.clearTimeout(initialPositionTimer)
       if (readyTimer !== null) window.clearTimeout(readyTimer)
       if (galleryLoopTimerRef.current !== null) window.clearTimeout(galleryLoopTimerRef.current)
+      if (galleryNavigationTimerRef.current !== null) window.clearTimeout(galleryNavigationTimerRef.current)
+      if (galleryLoopJumpFrameRef.current !== null) window.cancelAnimationFrame(galleryLoopJumpFrameRef.current)
     }
   }, [])
 
@@ -322,6 +334,19 @@ function App() {
     })
   }
 
+  function normalizeGalleryLoop(index: number) {
+    setIsGalleryLoopJumping(true)
+    scrollToGallerySlide(index + 1, 'auto')
+    setGalleryFocusIndex(index)
+
+    galleryLoopJumpFrameRef.current = window.requestAnimationFrame(() => {
+      galleryLoopJumpFrameRef.current = window.requestAnimationFrame(() => {
+        setIsGalleryLoopJumping(false)
+        galleryLoopJumpFrameRef.current = null
+      })
+    })
+  }
+
   function moveGallery(offset: number) {
     const isFirstToLast = galleryIndex === 0 && offset < 0
     const isLastToFirst = galleryIndex === invitation.gallery.length - 1 && offset > 0
@@ -329,30 +354,90 @@ function App() {
     const nextTrackIndex = isFirstToLast ? 0 : isLastToFirst ? invitation.gallery.length + 1 : nextIndex + 1
 
     scrollToGallerySlide(nextTrackIndex)
+    if (!isFirstToLast && !isLastToFirst) return
+
+    galleryIsNavigatingRef.current = true
     setGalleryIndex(nextIndex)
+
+    if (galleryNavigationTimerRef.current !== null) window.clearTimeout(galleryNavigationTimerRef.current)
+    galleryNavigationTimerRef.current = window.setTimeout(() => {
+      normalizeGalleryLoop(nextIndex)
+      galleryIsNavigatingRef.current = false
+    }, 620)
+
   }
 
-  function syncGalleryIndex() {
+  function getGalleryFocus() {
     const track = galleryTrackRef.current
-    if (!track || !galleryIsReadyRef.current) return
+    if (!track) return null
 
     const trackCenter = track.scrollLeft + track.clientWidth / 2
     const slides = Array.from(track.querySelectorAll<HTMLButtonElement>('[data-gallery-index]'))
-    const closestSlide = slides.reduce<HTMLButtonElement | null>((closest, slide) => {
-      const currentDistance = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - trackCenter)
-      if (closest === null) return slide
-      const closestDistance = Math.abs(closest.offsetLeft + closest.offsetWidth / 2 - trackCenter)
-      return currentDistance < closestDistance ? slide : closest
-    }, null)
+    let closestSlide: HTMLButtonElement | null = null
+    let closestDistance = Number.POSITIVE_INFINITY
 
-    if (closestSlide === null) return
+    for (const slide of slides) {
+      const distance = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - trackCenter)
+      if (distance < closestDistance) {
+        closestSlide = slide
+        closestDistance = distance
+      }
+    }
 
-    const nextIndex = Number(closestSlide.dataset.galleryIndex)
+    return closestSlide === null ? null : { slide: closestSlide, distance: closestDistance }
+  }
+
+  function syncGalleryIndex() {
+    const focus = getGalleryFocus()
+    if (!focus || !galleryIsReadyRef.current) return
+
+    const nextIndex = Number(focus.slide.dataset.galleryIndex)
+    if (focus.distance > 2) {
+      setGalleryFocusIndex(null)
+      return
+    }
+
+    setGalleryFocusIndex(nextIndex)
+    if (galleryIsNavigatingRef.current) return
+
     setGalleryIndex(nextIndex)
 
-    if (closestSlide.dataset.galleryClone !== 'true') return
+    if (focus.slide.dataset.galleryClone !== 'true') return
     if (galleryLoopTimerRef.current !== null) window.clearTimeout(galleryLoopTimerRef.current)
-    galleryLoopTimerRef.current = window.setTimeout(() => scrollToGallerySlide(nextIndex + 1, 'auto'), 140)
+    galleryLoopTimerRef.current = window.setTimeout(() => normalizeGalleryLoop(nextIndex), 140)
+  }
+
+  function startGalleryDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (event.pointerType === 'touch' || (event.pointerType === 'mouse' && event.button !== 0)) return
+
+    const track = event.currentTarget
+    galleryDragStartXRef.current = event.clientX
+    galleryDragStartScrollRef.current = track.scrollLeft
+    galleryDidDragRef.current = false
+    galleryIsDraggingRef.current = true
+    track.setPointerCapture(event.pointerId)
+    setIsGalleryDragging(true)
+  }
+
+  function moveGalleryDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!galleryIsDraggingRef.current) return
+
+    const distance = event.clientX - galleryDragStartXRef.current
+    if (Math.abs(distance) > 4) galleryDidDragRef.current = true
+    event.currentTarget.scrollLeft = galleryDragStartScrollRef.current - distance
+  }
+
+  function endGalleryDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!galleryIsDraggingRef.current) return
+
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    galleryIsDraggingRef.current = false
+    setIsGalleryDragging(false)
+    window.setTimeout(() => {
+      galleryDidDragRef.current = false
+    }, 0)
   }
 
   useEffect(() => {
@@ -679,25 +764,36 @@ function App() {
           <h2 id="gallery-heading">우리의 장면들</h2>
           <p className="section-caption">사진을 누르면 크게 볼 수 있어요.</p>
           <div className="gallery-carousel reveal-item" role="region" aria-roledescription="carousel" aria-label="우리의 장면들">
-            <div className="gallery-grid" ref={galleryTrackRef} onScroll={syncGalleryIndex}>
+            <div
+              className={'gallery-grid' + (isGalleryDragging ? ' is-dragging' : '') + (isGalleryLoopJumping ? ' is-loop-jumping' : '')}
+              ref={galleryTrackRef}
+              onScroll={syncGalleryIndex}
+              onPointerDown={startGalleryDrag}
+              onPointerMove={moveGalleryDrag}
+              onPointerUp={endGalleryDrag}
+              onPointerCancel={endGalleryDrag}
+            >
             {gallerySlides.map(({ image, index, isClone }, trackIndex) => (
               <button
-                className={'gallery-tile' + (galleryIndex === index && !isClone ? ' is-current' : '')}
+                className={'gallery-tile' + (galleryFocusIndex === index ? ' is-current' : '')}
                 key={image.title + trackIndex}
                 data-gallery-index={index}
                 data-gallery-clone={isClone}
                 data-track-index={trackIndex}
-                onClick={() => {
+                onClick={(event) => {
+                  if (galleryDidDragRef.current) {
+                    event.preventDefault()
+                    return
+                  }
                   if (galleryIndex === index && !isClone) {
                     setActiveGallery(index)
                     return
                   }
                   scrollToGallerySlide(index + 1)
-                  setGalleryIndex(index)
                 }}
                 aria-label={image.title + ' 크게 보기'}
               >
-                <img src={import.meta.env.BASE_URL + image.src} alt={image.title} loading="lazy" />
+                <img src={import.meta.env.BASE_URL + image.src} alt={image.title} loading="lazy" draggable={false} />
               </button>
             ))}
             </div>
