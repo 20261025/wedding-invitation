@@ -145,6 +145,14 @@ function MusicIcon() {
   )
 }
 
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M9 6.8L18 12L9 17.2V6.8Z" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
 function CallIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -805,7 +813,7 @@ function App() {
           aria-label={isMusicPlaying ? '배경음악 일시정지' : '배경음악 재생'}
           aria-pressed={isMusicPlaying}
         >
-          <MusicIcon />
+          {isMusicPlaying ? <MusicIcon /> : <PlayIcon />}
         </button>
         <button
           className="round-control hero-menu"

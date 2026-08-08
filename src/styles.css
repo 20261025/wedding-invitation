@@ -490,13 +490,17 @@ svg {
 }
 
 .section-space {
+  --section-glow: rgb(232 224 214 / 32%);
+  position: relative;
   padding: 83px 29px;
-  background-color: rgb(250 248 241 / 72%);
+  background-color: rgb(251 249 244 / 94%);
   background-image:
+    linear-gradient(to bottom, var(--section-glow), transparent 72px),
     linear-gradient(rgb(255 255 255 / 18%), rgb(255 255 255 / 18%)),
     var(--paper-texture);
-  background-repeat: no-repeat, repeat-y;
-  background-size: 100% 100%, 100% auto;
+  background-repeat: no-repeat, no-repeat, repeat-y;
+  background-size: 100% 100%, 100% 100%, 100% auto;
+  box-shadow: inset 0 18px 28px -36px rgb(79 67 55 / 38%);
   text-align: center;
 }
 
@@ -547,7 +551,8 @@ svg {
 
 .story {
   position: relative;
-  background-color: rgb(252 251 246 / 72%);
+  --section-glow: rgb(237 230 222 / 36%);
+  background-color: rgb(253 252 249 / 96%);
 }
 
 .story > svg,
@@ -597,7 +602,9 @@ svg {
 }
 
 .intro {
+  --section-glow: rgb(231 222 212 / 34%);
   padding-bottom: 77px;
+  background-color: rgb(249 246 239 / 96%);
 }
 
 .section-body {
@@ -783,7 +790,8 @@ svg {
 }
 
 .calendar-section {
-  background-color: rgb(240 236 226 / 78%);
+  --section-glow: rgb(220 209 193 / 43%);
+  background-color: rgb(244 240 231 / 96%);
 }
 
 .calendar-section h2 {
@@ -881,7 +889,8 @@ svg {
 }
 
 .gallery-section {
-  background-color: rgb(252 251 246 / 74%);
+  --section-glow: rgb(229 220 211 / 36%);
+  background-color: rgb(253 252 248 / 96%);
 }
 
 .section-caption {
@@ -900,7 +909,7 @@ svg {
   gap: 9px;
   overflow-x: auto;
   padding: 6px 0 10px;
-  scroll-behavior: smooth;
+  scroll-behavior: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
 }
@@ -920,11 +929,13 @@ svg {
   flex: 0 0 76%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
+  padding: 0;
   border-radius: 16px;
   background: #e9e4dc;
   scroll-snap-align: center;
   scroll-snap-stop: always;
-  transition: opacity 420ms ease, filter 420ms ease, transform 420ms ease;
+  transform-origin: center;
+  transition: opacity 420ms ease, filter 420ms ease, transform 520ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 520ms ease;
 }
 
 .gallery-tile:not(.is-current) {
@@ -954,7 +965,9 @@ svg {
 .gallery-section.is-visible .gallery-tile:nth-child(6) { transition-delay: 480ms; }
 
 .gallery-tile:hover {
-  transform: translateY(-2px) scale(1.01);
+  z-index: 2;
+  transform: translateY(-4px) scale(1.055);
+  box-shadow: 0 16px 30px rgb(62 49 39 / 18%);
 }
 
 .gallery-tile img,
@@ -970,7 +983,7 @@ svg {
 }
 
 .gallery-tile:hover img {
-  transform: scale(1.025);
+  transform: scale(1.09);
 }
 
 .gallery-controls {
@@ -1015,7 +1028,8 @@ svg {
 }
 
 .location-section {
-  background-color: rgb(244 241 234 / 74%);
+  --section-glow: rgb(218 207 194 / 40%);
+  background-color: rgb(247 243 235 / 96%);
 }
 
 .location-hall {
@@ -1197,7 +1211,8 @@ svg {
 }
 
 .accounts-section {
-  background-color: rgb(251 250 246 / 74%);
+  --section-glow: rgb(229 218 208 / 35%);
+  background-color: rgb(252 249 245 / 96%);
 }
 
 .accounts-section > svg {
@@ -1280,12 +1295,13 @@ svg {
 .footer {
   padding: 56px 24px calc(48px + env(safe-area-inset-bottom));
   color: #72685e;
-  background-color: rgb(234 228 217 / 72%);
+  background-color: rgb(238 232 222 / 94%);
   background-image:
+    linear-gradient(to bottom, rgb(210 198 184 / 38%), transparent 72px),
     linear-gradient(rgb(255 255 255 / 16%), rgb(255 255 255 / 16%)),
     var(--paper-texture);
-  background-repeat: no-repeat, repeat-y;
-  background-size: 100% 100%, 100% auto;
+  background-repeat: no-repeat, no-repeat, repeat-y;
+  background-size: 100% 100%, 100% 100%, 100% auto;
   text-align: center;
 }
 
