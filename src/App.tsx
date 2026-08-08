@@ -176,6 +176,7 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [countdown, setCountdown] = useState(getCountdown)
   const [activeGallery, setActiveGallery] = useState<number | null>(null)
+  const [galleryIndex, setGalleryIndex] = useState(0)
   const [openAccount, setOpenAccount] = useState<'groom' | 'bride' | null>(null)
   const [copied, setCopied] = useState<string | null>(null)
   const [isRsvpOpen, setIsRsvpOpen] = useState(invitation.rsvp.enabled)
@@ -191,10 +192,18 @@ function App() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const bgmRef = useRef<HTMLAudioElement>(null)
+  const galleryTrackRef = useRef<HTMLDivElement>(null)
+  const galleryLoopTimerRef = useRef<number | null>(null)
+  const galleryIsReadyRef = useRef(false)
   const hasStartedMusicRef = useRef(false)
   const calendar = useMemo(createCalendar, [])
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
   const bgmUrl = import.meta.env.BASE_URL + 'sounds/bgm.mp3'
+  const gallerySlides = [
+    { image: invitation.gallery[invitation.gallery.length - 1], index: invitation.gallery.length - 1, isClone: true },
+    ...invitation.gallery.map((image, index) => ({ image, index, isClone: false })),
+    { image: invitation.gallery[0], index: 0, isClone: true },
+  ]
   const themeStyle: CSSProperties & Record<`--${string}`, string> = {
     '--paper-texture': `url("${import.meta.env.BASE_URL + invitation.theme.paperTexture}")`,
     '--font-body': invitation.theme.fonts.body,
@@ -278,6 +287,65 @@ function App() {
     window.addEventListener('keydown', closeOnEscape)
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [activeGallery])
+
+  useEffect(() => {
+    let readyTimer: number | null = null
+    const initialPositionTimer = window.setTimeout(() => {
+      scrollToGallerySlide(1, 'auto')
+      readyTimer = window.setTimeout(() => {
+        galleryIsReadyRef.current = true
+      }, 220)
+    }, 80)
+    return () => {
+      window.clearTimeout(initialPositionTimer)
+      if (readyTimer !== null) window.clearTimeout(readyTimer)
+      if (galleryLoopTimerRef.current !== null) window.clearTimeout(galleryLoopTimerRef.current)
+    }
+  }, [])
+
+  function scrollToGallerySlide(trackIndex: number, behavior: ScrollBehavior = 'smooth') {
+    const track = galleryTrackRef.current
+    const slide = track?.querySelector<HTMLButtonElement>(`[data-track-index="${trackIndex}"]`)
+    if (!track || !slide) return
+
+    track.scrollTo({
+      left: slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2,
+      behavior,
+    })
+  }
+
+  function moveGallery(offset: number) {
+    const isFirstToLast = galleryIndex === 0 && offset < 0
+    const isLastToFirst = galleryIndex === invitation.gallery.length - 1 && offset > 0
+    const nextIndex = (galleryIndex + offset + invitation.gallery.length) % invitation.gallery.length
+    const nextTrackIndex = isFirstToLast ? 0 : isLastToFirst ? invitation.gallery.length + 1 : nextIndex + 1
+
+    scrollToGallerySlide(nextTrackIndex)
+    setGalleryIndex(nextIndex)
+  }
+
+  function syncGalleryIndex() {
+    const track = galleryTrackRef.current
+    if (!track || !galleryIsReadyRef.current) return
+
+    const trackCenter = track.scrollLeft + track.clientWidth / 2
+    const slides = Array.from(track.querySelectorAll<HTMLButtonElement>('[data-gallery-index]'))
+    const closestSlide = slides.reduce<HTMLButtonElement | null>((closest, slide) => {
+      const currentDistance = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - trackCenter)
+      if (closest === null) return slide
+      const closestDistance = Math.abs(closest.offsetLeft + closest.offsetWidth / 2 - trackCenter)
+      return currentDistance < closestDistance ? slide : closest
+    }, null)
+
+    if (closestSlide === null) return
+
+    const nextIndex = Number(closestSlide.dataset.galleryIndex)
+    setGalleryIndex(nextIndex)
+
+    if (closestSlide.dataset.galleryClone !== 'true') return
+    if (galleryLoopTimerRef.current !== null) window.clearTimeout(galleryLoopTimerRef.current)
+    galleryLoopTimerRef.current = window.setTimeout(() => scrollToGallerySlide(nextIndex + 1, 'auto'), 140)
+  }
 
   useEffect(() => {
     if (!isRsvpOpen) return
@@ -602,18 +670,34 @@ function App() {
           <p className="section-eyebrow">MOMENTS</p>
           <h2 id="gallery-heading">우리의 장면들</h2>
           <p className="section-caption">사진을 누르면 크게 볼 수 있어요.</p>
-          <div className="gallery-grid reveal-item">
-            {invitation.gallery.map((image, index) => (
+          <div className="gallery-carousel reveal-item" role="region" aria-roledescription="carousel" aria-label="우리의 장면들">
+            <div className="gallery-grid" ref={galleryTrackRef} onScroll={syncGalleryIndex}>
+            {gallerySlides.map(({ image, index, isClone }, trackIndex) => (
               <button
-                className={'gallery-tile gallery-' + image.tone}
-                key={image.title}
-                onClick={() => setActiveGallery(index)}
+                className={'gallery-tile' + (galleryIndex === index && !isClone ? ' is-current' : '')}
+                key={image.title + trackIndex}
+                data-gallery-index={index}
+                data-gallery-clone={isClone}
+                data-track-index={trackIndex}
+                onClick={() => {
+                  if (galleryIndex === index && !isClone) {
+                    setActiveGallery(index)
+                    return
+                  }
+                  scrollToGallerySlide(index + 1)
+                  setGalleryIndex(index)
+                }}
                 aria-label={image.title + ' 크게 보기'}
               >
-                <span>{String(index + 1).padStart(2, '0')}</span>
-                <i>{image.title}</i>
+                <img src={import.meta.env.BASE_URL + image.src} alt={image.title} loading="lazy" />
               </button>
             ))}
+            </div>
+            <div className="gallery-controls">
+              <button className="gallery-control" type="button" onClick={() => moveGallery(-1)} aria-label="이전 사진 보기">‹</button>
+              <p aria-live="polite">{galleryIndex + 1} / {invitation.gallery.length}</p>
+              <button className="gallery-control" type="button" onClick={() => moveGallery(1)} aria-label="다음 사진 보기">›</button>
+            </div>
           </div>
         </section>
 
@@ -868,13 +952,11 @@ function App() {
           <button className="lightbox-close" onClick={() => setActiveGallery(null)} aria-label="사진 닫기">
             <CloseIcon />
           </button>
-          <div
-            className={'lightbox-art gallery-' + invitation.gallery[activeGallery].tone}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <span>{String(activeGallery + 1).padStart(2, '0')}</span>
-            <p>{invitation.gallery[activeGallery].title}</p>
-            <small>이 영역을 두 분의 사진으로 바꿔 주세요.</small>
+          <div className="lightbox-art" onClick={(event) => event.stopPropagation()}>
+            <img
+              src={import.meta.env.BASE_URL + invitation.gallery[activeGallery].src}
+              alt={invitation.gallery[activeGallery].title}
+            />
           </div>
         </div>
       )}

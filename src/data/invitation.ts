@@ -85,12 +85,12 @@ export const invitation = {
     '가까이에서 축복해 주시면 감사하겠습니다.',
   ],
   gallery: [
-    { title: '첫 번째 장면', tone: 'peach' },
-    { title: '두 번째 장면', tone: 'sage' },
-    { title: '세 번째 장면', tone: 'sand' },
-    { title: '네 번째 장면', tone: 'rose' },
-    { title: '다섯 번째 장면', tone: 'sky' },
-    { title: '여섯 번째 장면', tone: 'ink' },
+    { title: '첫 번째 장면', src: 'images/moment01.jpeg' },
+    { title: '두 번째 장면', src: 'images/moment02.jpeg' },
+    { title: '세 번째 장면', src: 'images/moment03.jpeg' },
+    { title: '네 번째 장면', src: 'images/moment04.jpeg' },
+    { title: '다섯 번째 장면', src: 'images/moment05.jpeg' },
+    { title: '여섯 번째 장면', src: 'images/moment06.jpeg' },
   ],
   accounts: {
     groom: [
