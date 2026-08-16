@@ -87,10 +87,16 @@ export const invitation = {
   gallery: [
     { title: '첫 번째 장면', src: 'images/moment01.jpeg' },
     { title: '두 번째 장면', src: 'images/moment02.jpeg' },
-    { title: '세 번째 장면', src: 'images/moment03.jpeg' },
-    { title: '네 번째 장면', src: 'images/moment04.jpeg' },
+    { title: '세 번째 장면', src: 'images/moment03.jpg' },
+    { title: '네 번째 장면', src: 'images/moment04.jpg' },
     { title: '다섯 번째 장면', src: 'images/moment05.jpeg' },
-    { title: '여섯 번째 장면', src: 'images/moment06.jpeg' },
+    { title: '여섯 번째 장면', src: 'images/moment06.jpg' },
+    { title: '일곱 번째 장면', src: 'images/moment07.jpg' },
+    { title: '여덟 번째 장면', src: 'images/moment08.jpg' },
+    { title: '아홉 번째 장면', src: 'images/moment09.jpeg' },
+    { title: '열 번째 장면', src: 'images/moment10.jpeg' },
+    { title: '열한 번째 장면', src: 'images/moment11.jpg' },
+    { title: '열두 번째 장면', src: 'images/moment12.jpeg' },
   ],
   accounts: {
     groom: [
