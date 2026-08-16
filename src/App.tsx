@@ -672,7 +672,7 @@ function App() {
             <article className="person-card groom-card">
               <div className="portrait-frame">
                 {invitation.couple.groom.portrait ? (
-                  <img src={invitation.couple.groom.portrait} alt={invitation.couple.groom.name + ' 사진'} />
+                  <img src={import.meta.env.BASE_URL + invitation.couple.groom.portrait} alt={invitation.couple.groom.name + ' 사진'} />
                 ) : (
                   <div className="portrait-placeholder groom-placeholder" aria-label="신랑 사진 자리">
                     <span>GROOM PHOTO</span>
@@ -697,7 +697,7 @@ function App() {
             <article className="person-card bride-card">
               <div className="portrait-frame">
                 {invitation.couple.bride.portrait ? (
-                  <img src={invitation.couple.bride.portrait} alt={invitation.couple.bride.name + ' 사진'} />
+                  <img src={import.meta.env.BASE_URL + invitation.couple.bride.portrait} alt={invitation.couple.bride.name + ' 사진'} />
                 ) : (
                   <div className="portrait-placeholder bride-placeholder" aria-label="신부 사진 자리">
                     <span>BRIDE PHOTO</span>

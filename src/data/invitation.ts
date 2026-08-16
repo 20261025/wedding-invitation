@@ -28,7 +28,7 @@ export const invitation = {
     groom: {
       name: '김민준',
       englishName: 'MINJUN',
-      portrait: '', // 예: '/images/groom.jpg'
+      portrait: 'images/groom.JPG',
       profile: ['95년 6월 21일', 'IT 개발자 👨🏻‍💻'],
       message: '저희 행복하게',
       phone: '010-7176-4662',
@@ -39,7 +39,7 @@ export const invitation = {
     bride: {
       name: '정희선',
       englishName: 'HEESUN',
-      portrait: '', // 예: '/images/bride.jpg'
+      portrait: 'images/bride.JPG',
       profile: ['91년 7월 9일', 'IT 개발자 👩🏻‍💻'],
       message: '잘 살겠습니다 :)',
       phone: '010-6676-3058',
