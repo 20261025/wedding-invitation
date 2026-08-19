@@ -589,7 +589,7 @@ function App() {
               <span> 그리고 </span>
               {invitation.couple.bride.name}
             </p>
-            <p className="hero-draft-notice">현재 제작 중인 청첩장입니다.</p>
+            {/*<p className="hero-draft-notice">현재 제작 중인 청첩장입니다.</p>*/}
           </div>
 
           <div className="hero-photo">
