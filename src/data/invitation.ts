@@ -2,13 +2,13 @@ const kakaoJavaScriptKey = 'bf737c0f633d3d0ce522d13dd8a7db30'
 
 export const invitation = {
   siteTitle: '민준과 희선의 결혼식',
-  heroImage: 'images/main.jpeg',
+  heroImage: 'images/main.JPG',
   heroImageAlt: '두 사람의 웨딩 사진',
   social: {
     title: '김민준 ♥ 정희선 결혼합니다',
     description: '2026년 10월 25일 일요일 오후 12시 30분, 라마다 서울 신도림 호텔 2층 그랜드볼룸',
     siteUrl: 'https://20261025.github.io/wedding-invitation/',
-    image: 'images/main.jpeg',
+    image: 'images/main.JPG',
     imageAlt: '민준과 희선의 웨딩 사진',
   },
   kakaoShare: {
@@ -89,22 +89,24 @@ export const invitation = {
     { title: '두 번째 장면', src: 'images/moment02.jpeg' },
     { title: '세 번째 장면', src: 'images/moment03.jpg' },
     { title: '네 번째 장면', src: 'images/moment04.jpg' },
-    { title: '다섯 번째 장면', src: 'images/moment05.jpeg' },
-    { title: '여섯 번째 장면', src: 'images/moment06.jpg' },
+    { title: '다섯 번째 장면', src: 'images/moment05.jpg' },
+    { title: '여섯 번째 장면', src: 'images/moment06.jpeg' },
     { title: '일곱 번째 장면', src: 'images/moment07.jpg' },
     { title: '여덟 번째 장면', src: 'images/moment08.jpg' },
-    { title: '아홉 번째 장면', src: 'images/moment09.jpeg' },
-    { title: '열 번째 장면', src: 'images/moment10.jpeg' },
-    { title: '열한 번째 장면', src: 'images/moment11.jpg' },
+    { title: '아홉 번째 장면', src: 'images/moment09.JPG' },
+    { title: '열 번째 장면', src: 'images/moment10.jpg' },
+    { title: '열한 번째 장면', src: 'images/moment11.jpeg' },
     { title: '열두 번째 장면', src: 'images/moment12.jpeg' },
+    { title: '열세 번째 장면', src: 'images/moment13.jpg' },
+    { title: '열네 번째 장면', src: 'images/moment14.jpeg' },
   ],
   accounts: {
     groom: [
-      { owner: '김민준', bank: '국민은행', number: '000000-00-000000' },
+      { owner: '김민준', bank: '카카오뱅크', number: '3333-11-0058135' },
       /*{ owner: '김아버지', bank: '신한은행', number: '000-000-000000' },*/
     ],
     bride: [
-      { owner: '정희선', bank: '카카오뱅크', number: '0000-000-000000' },
+      { owner: '정희선', bank: '카카오뱅크', number: '3333-08-7680587' },
       /*{ owner: '이아버지', bank: '하나은행', number: '000-000000-00000' },*/
     ],
   },

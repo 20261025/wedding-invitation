@@ -472,9 +472,7 @@ function App() {
 
   async function shareInvitation() {
     const { javascriptKey, templateId, templateArgs } = invitation.kakaoShare
-    // 카카오 템플릿은 로컬 개발 환경에서만 시험합니다.
-    // 배포된 청첩장은 아래의 기본 링크 공유를 계속 사용합니다.
-    if (import.meta.env.DEV && javascriptKey && templateId) {
+    if (javascriptKey && templateId) {
       try {
         const Kakao = await loadKakaoShareSdk(javascriptKey)
         Kakao.Share.sendCustom({
@@ -785,11 +783,7 @@ function App() {
                     event.preventDefault()
                     return
                   }
-                  if (galleryIndex === index && !isClone) {
-                    setActiveGallery(index)
-                    return
-                  }
-                  scrollToGallerySlide(index + 1)
+                  setActiveGallery(index)
                 }}
                 aria-label={image.title + ' 크게 보기'}
               >
@@ -887,12 +881,10 @@ function App() {
           <FlowerMark />
           <p>{invitation.couple.groom.name} <span>and</span> {invitation.couple.bride.name}</p>
           <small>함께해 주시는 모든 마음을 오래 기억하겠습니다.</small>
-          {import.meta.env.DEV && (
-            <button className="kakao-share-button" onClick={shareInvitation}>
-              <MessageIcon />
-              카카오톡으로 공유하기
-            </button>
-          )}
+          <button className="kakao-share-button" onClick={shareInvitation}>
+            <MessageIcon />
+            카카오톡으로 공유하기
+          </button>
           <button
             className="invitation-link-button"
             onClick={() => copyText(invitation.social.siteUrl, '청첩장 주소')}
