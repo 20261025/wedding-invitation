@@ -29,7 +29,7 @@ export const invitation = {
       name: '김민준',
       englishName: 'MINJUN',
       portrait: 'images/groom.JPG',
-      profile: ['95년 6월 21일', 'IT 개발자 👨🏻‍💻'],
+      profile: ['6월 21일', 'IT 개발자 👨🏻‍💻'],
       message: '저희 행복하게',
       phone: '010-7176-4662',
       father: '김용덕',
@@ -40,7 +40,7 @@ export const invitation = {
       name: '정희선',
       englishName: 'HEESUN',
       portrait: 'images/bride.JPG',
-      profile: ['91년 7월 9일', 'IT 개발자 👩🏻‍💻'],
+      profile: ['7월 9일', 'IT 개발자 👩🏻‍💻'],
       message: '잘 살겠습니다 :)',
       phone: '010-6676-3058',
       father: '정훈채',
@@ -103,11 +103,11 @@ export const invitation = {
   accounts: {
     groom: [
       { owner: '김민준', bank: '카카오뱅크', number: '3333-11-0058135' },
-      /*{ owner: '김아버지', bank: '신한은행', number: '000-000-000000' },*/
+      { owner: '김용덕', bank: '부산은행', number: '032-12-0608759' },
     ],
     bride: [
       { owner: '정희선', bank: '카카오뱅크', number: '3333-08-7680587' },
-      /*{ owner: '이아버지', bank: '하나은행', number: '000-000000-00000' },*/
+      { owner: '정훈채', bank: '농협', number: '246-12-237861' },
     ],
   },
 }
