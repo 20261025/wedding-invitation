@@ -103,11 +103,11 @@ export const invitation = {
   accounts: {
     groom: [
       { owner: '김민준', bank: '카카오뱅크', number: '3333-11-0058135' },
-      { owner: '김용덕', bank: '부산은행', number: '032-12-0608759' },
+      { owner: '신랑 아버지 김용덕', bank: '부산은행', number: '032-12-0608759' },
     ],
     bride: [
       { owner: '정희선', bank: '카카오뱅크', number: '3333-08-7680587' },
-      { owner: '정훈채', bank: '농협', number: '246-12-237861' },
+      { owner: '신부 아버지 정훈채', bank: '농협', number: '246-12-237861' },
     ],
   },
 }
