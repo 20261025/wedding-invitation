@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, type FormEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
 import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
@@ -565,9 +565,62 @@ function App() {
   }
 
   function mapLink(provider: 'kakao' | 'naver' | 'tmap') {
-    const query = encodeURIComponent(invitation.venue.name + ' ' + invitation.venue.address)
+    const { latitude, longitude, name } = invitation.venue
+    const encodedName = encodeURIComponent(name)
+
     if (provider === 'kakao') return invitation.venue.kakaoMapUrl
-    return 'tmap://route?goalx=' + invitation.venue.longitude + '&goaly=' + invitation.venue.latitude + '&goalname=' + encodeURIComponent(invitation.venue.name)
+
+    if (provider === 'naver') {
+      const route = 'route/car?dlat=' + latitude + '&dlng=' + longitude + '&dname=' + encodedName + '&appname=' + encodeURIComponent(window.location.href)
+      return /Android/i.test(navigator.userAgent)
+        ? 'intent://' + route + '#Intent;scheme=nmap;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;package=com.nhn.android.nmap;end'
+        : 'nmap://' + route
+    }
+
+    return 'tmap://route?goalx=' + longitude + '&goaly=' + latitude + '&goalname=' + encodedName
+  }
+
+  function mapFallbackLink(provider: 'naver' | 'tmap') {
+    const query = encodeURIComponent(invitation.venue.name + ' ' + invitation.venue.address)
+
+    if (provider === 'naver') {
+      return 'https://map.naver.com/p/search/' + query
+    }
+
+    return 'https://www.tmap.co.kr/tmap2/mobile/route.jsp'
+  }
+
+  function openNavigationApp(event: ReactMouseEvent<HTMLAnchorElement>, provider: 'naver' | 'tmap') {
+    event.preventDefault()
+
+    let appOpened = false
+    let fallbackTimer: number | undefined
+    const clearListeners = () => {
+      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('pagehide', handlePageHide)
+      if (fallbackTimer) window.clearTimeout(fallbackTimer)
+    }
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        appOpened = true
+        clearListeners()
+      }
+    }
+    const handlePageHide = () => {
+      appOpened = true
+      clearListeners()
+    }
+
+    document.addEventListener('visibilitychange', handleVisibility)
+    window.addEventListener('pagehide', handlePageHide)
+    window.location.href = mapLink(provider)
+
+    fallbackTimer = window.setTimeout(() => {
+      clearListeners()
+      if (!appOpened && document.visibilityState === 'visible') {
+        window.location.href = mapFallbackLink(provider)
+      }
+    }, 1500)
   }
 
   return (
@@ -823,9 +876,9 @@ function App() {
             </button>
           </div>
           <div className="map-actions reveal-item">
-            <a href={mapLink('tmap')} target="_blank" rel="noreferrer">티맵</a>
+            <a href={mapFallbackLink('tmap')} onClick={(event) => openNavigationApp(event, 'tmap')}>티맵</a>
             <a href={mapLink('kakao')} target="_blank" rel="noreferrer">카카오맵</a>
-            <a href={mapLink('naver')} target="_blank" rel="noreferrer">네이버지도</a>
+            <a href={mapFallbackLink('naver')} onClick={(event) => openNavigationApp(event, 'naver')}>네이버지도</a>
           </div>
           <div className="transport-note reveal-item">
             <p><strong>지하철</strong><span>2호선 신도림역 1번 출구 (신도림역 광장 도보 5분)</span></p>
