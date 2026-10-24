@@ -334,6 +334,14 @@ svg {
   word-break: keep-all;
 }
 
+.hero-location-copy .hero-location-hall {
+  margin: 3px 0;
+  color: #575049;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
 .hero-map-actions {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1518,6 +1526,15 @@ svg {
 .directions-details p {
   grid-template-columns: minmax(0, 1fr);
   row-gap: 5px;
+}
+
+.directions-hall {
+  margin: 22px 0 0;
+  color: #575049;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.5;
+  word-break: keep-all;
 }
 
 .rsvp-submit {

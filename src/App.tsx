@@ -648,7 +648,8 @@ function App() {
                 <div>
                   <p>LOCATION</p>
                   <strong>{invitation.venue.name}</strong>
-                  <span>{invitation.venue.hall} · {invitation.venue.address}</span>
+                  <span className="hero-location-hall">{invitation.venue.hall}</span>
+                  <span>{invitation.venue.address}</span>
                 </div>
               </div>
               <div className="hero-map-actions">
@@ -968,6 +969,7 @@ function App() {
             <p><strong>주차</strong><span>호텔 내 주차장 이용<br />(예식 당일 1시간 30분 무료 주차)</span></p>
           </div>
           <button className="directions-open" onClick={() => directionsDialogRef.current?.close()}>확인했어요</button>
+          <p className="directions-hall">{invitation.venue.hall}</p>
         </div>
       </dialog>
 
