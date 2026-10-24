@@ -208,6 +208,148 @@ svg {
   letter-spacing: 0;
 }
 
+.hero-wedding-time {
+  margin: 12px 0 0;
+  color: #766e66;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+
+.hero-urgency {
+  position: relative;
+  z-index: 2;
+  margin-top: 20px;
+}
+
+.hero-countdown {
+  display: grid;
+  grid-template-columns: 0.9fr repeat(3, 1fr);
+  overflow: hidden;
+  border: 1px solid rgb(188 178 167 / 62%);
+  background: rgb(255 253 249 / 36%);
+}
+
+.hero-countdown div {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 4px;
+  padding: 10px 4px 9px;
+  border-right: 1px solid rgb(188 178 167 / 56%);
+  text-align: center;
+}
+
+.hero-countdown div:last-child {
+  border-right: 0;
+}
+
+.hero-countdown-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin: 0;
+  border-right: 1px solid rgb(188 178 167 / 56%);
+  color: #887c70;
+  font-size: 9px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.hero-countdown .hero-countdown-label span {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.hero-countdown strong {
+  color: #514a43;
+  font-family: var(--font-display, "Iowan Old Style", "AppleMyungjo", "Noto Serif KR", serif);
+  font-size: 22px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.hero-countdown span {
+  color: #978c81;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+}
+
+.hero-location {
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid rgb(188 178 167 / 54%);
+}
+
+.hero-location-copy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+}
+
+.hero-location-copy > svg {
+  width: 15px;
+  flex: 0 0 auto;
+  color: #9b8276;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.hero-location-copy > div {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.hero-location-copy p,
+.hero-location-copy strong,
+.hero-location-copy span {
+  margin: 0;
+}
+
+.hero-location-copy p {
+  color: #988d82;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.hero-location-copy strong {
+  color: #575049;
+  font-family: var(--font-display, "Iowan Old Style", "AppleMyungjo", "Noto Serif KR", serif);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.35;
+}
+
+.hero-location-copy span {
+  color: #8e847a;
+  font-size: 9px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.hero-map-actions {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.hero-map-actions a {
+  padding: 9px 4px;
+  border: 1px solid rgb(188 178 167 / 56%);
+  color: #6c645d;
+  background: rgb(255 255 255 / 20%);
+  font-size: 9px;
+  text-align: center;
+}
+
 .hero-draft-notice {
   width: max-content;
   max-width: 100%;
@@ -1299,6 +1441,83 @@ svg {
 .transport-note p span {
   min-width: 0;
   word-break: keep-all;
+}
+
+.hero-transport-note {
+  gap: 9px;
+  margin-top: 14px;
+  padding: 13px 0 0;
+  border-top-color: rgb(188 178 167 / 40%);
+  border-bottom: 0;
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.hero-transport-note p {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 2px;
+}
+
+.directions-open {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 13px 10px;
+  border: 1px solid rgb(188 178 167 / 56%);
+  color: #6c645d;
+  background: rgb(255 255 255 / 32%);
+  font-size: 13px;
+  text-align: center;
+}
+
+.directions-open span {
+  margin-left: 5px;
+}
+
+.directions-dialog {
+  width: min(420px, calc(100% - 32px));
+  max-height: calc(100dvh - 40px);
+  padding: 0;
+  border: 0;
+  color: #575049;
+  background: #faf7f2;
+  box-shadow: 0 20px 55px rgb(27 23 20 / 24%);
+}
+
+.directions-dialog::backdrop {
+  background: rgb(39 34 30 / 48%);
+  backdrop-filter: blur(4px);
+}
+
+.directions-content {
+  position: relative;
+  padding: 48px 24px 24px;
+  text-align: center;
+}
+
+.directions-content h2 {
+  margin: 12px 0;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.directions-venue {
+  margin: 0;
+  color: #8e847a;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.directions-details {
+  gap: 22px;
+  padding: 22px 0;
+  font-size: 20px;
+  line-height: 1.75;
+}
+
+.directions-details p {
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 5px;
 }
 
 .rsvp-submit {

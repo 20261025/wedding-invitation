@@ -1,4 +1,4 @@
-import { type CSSProperties, type FormEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, type FormEvent, type MouseEvent as ReactMouseEvent, type PointerEvent as ReactPointerEvent, useEffect, useRef, useState } from 'react'
 import { ArrowIcon, FlowerMark, PinIcon } from './components/LineArt'
 import { KakaoMap } from './components/KakaoMap'
 import { invitation } from './data/invitation'
@@ -101,24 +101,6 @@ function getCountdown(): Countdown {
   }
 }
 
-function createCalendar() {
-  const date = new Date(invitation.weddingDate)
-  const year = date.getFullYear()
-  const month = date.getMonth()
-  const firstDay = new Date(year, month, 1).getDay()
-  const lastDate = new Date(year, month + 1, 0).getDate()
-  const weddingDay = date.getDate()
-
-  return {
-    label: year + '. ' + String(month + 1).padStart(2, '0'),
-    cells: Array.from({ length: firstDay + lastDate }, (_, index) => {
-      if (index < firstDay) return null
-      const day = index - firstDay + 1
-      return { day, isWeddingDay: day === weddingDay }
-    }),
-  }
-}
-
 function phoneHref(phone: string) {
   return 'tel:' + phone.replaceAll('-', '')
 }
@@ -203,6 +185,7 @@ function App() {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false)
   const [showScrollTop, setShowScrollTop] = useState(false)
   const bgmRef = useRef<HTMLAudioElement>(null)
+  const directionsDialogRef = useRef<HTMLDialogElement>(null)
   const galleryTrackRef = useRef<HTMLDivElement>(null)
   const galleryLoopTimerRef = useRef<number | null>(null)
   const galleryNavigationTimerRef = useRef<number | null>(null)
@@ -214,7 +197,6 @@ function App() {
   const galleryDidDragRef = useRef(false)
   const galleryLoopJumpFrameRef = useRef<number | null>(null)
   const hasStartedMusicRef = useRef(false)
-  const calendar = useMemo(createCalendar, [])
   const heroImageUrl = import.meta.env.BASE_URL + invitation.heroImage
   const bgmUrl = import.meta.env.BASE_URL + 'sounds/bgm.mp3'
   const gallerySlides = [
@@ -642,7 +624,47 @@ function App() {
               <span> 그리고 </span>
               {invitation.couple.bride.name}
             </p>
+            <p className="hero-wedding-time">10월 25일 오후 12시 30분</p>
             {/*<p className="hero-draft-notice">현재 제작 중인 청첩장입니다.</p>*/}
+          </div>
+
+          <div className="hero-urgency" id="calendar" aria-label="예식 시간과 장소">
+            <div className="hero-countdown" aria-label="예식까지 남은 시간">
+              <p className="hero-countdown-label"><span aria-hidden="true">⏳</span>예식까지</p>
+              {([
+                ['시간', countdown.hours],
+                ['분', countdown.minutes],
+                ['초', countdown.seconds],
+              ] as const).map(([label, value]) => (
+                <div key={label}>
+                  <strong>{value}</strong>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+            <div className="hero-location">
+              <div className="hero-location-copy">
+                <PinIcon />
+                <div>
+                  <p>LOCATION</p>
+                  <strong>{invitation.venue.name}</strong>
+                  <span>{invitation.venue.hall} · {invitation.venue.address}</span>
+                </div>
+              </div>
+              <div className="hero-map-actions">
+                <a href={mapFallbackLink('tmap')} onClick={(event) => openNavigationApp(event, 'tmap')}>티맵</a>
+                <a href={mapLink('kakao')} target="_blank" rel="noreferrer">카카오맵</a>
+                <a href={mapFallbackLink('naver')} onClick={(event) => openNavigationApp(event, 'naver')}>네이버지도</a>
+              </div>
+              <div className="transport-note hero-transport-note">
+                <p><strong>지하철</strong><span>2호선 신도림역 1번 출구 (신도림역 광장 도보 5분)</span></p>
+                <p><strong>셔틀버스 타는 곳</strong><span>신도림역 1번 출구 앞</span></p>
+                <p><strong>주차</strong><span>호텔 내 주차장 이용 (예식 당일 1시간 30분 무료 주차)</span></p>
+              </div>
+              <button className="directions-open" onClick={() => directionsDialogRef.current?.showModal()}>
+                오시는 방법 크게 보기 <span aria-hidden="true">↗</span>
+              </button>
+            </div>
           </div>
 
           <div className="hero-photo">
@@ -687,72 +709,9 @@ function App() {
             </svg>
           </div>
 
-          <div className="hero-event" aria-label="예식 일시와 장소">
-            <p className="hero-event-date">{invitation.displayDate}</p>
-            <p className="hero-event-venue">
-              <span>{invitation.venue.name}</span>
-              <span>{invitation.venue.hall}</span>
-            </p>
-          </div>
           <div className="scroll-hint" aria-hidden="true">
             <span />
             SCROLL TO BEGIN
-          </div>
-        </section>
-
-        <section className="calendar-section section-space reveal-section" data-reveal id="calendar" aria-labelledby="calendar-heading">
-          <p className="section-eyebrow">SAVE THE DATE</p>
-          <h2 id="calendar-heading">{invitation.displayDate}</h2>
-          <div className="calendar-paper reveal-item">
-            <div className="calendar-title">{calendar.label}</div>
-            <div className="calendar-weekdays">
-              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => (
-                <span key={day}>{day}</span>
-              ))}
-            </div>
-            <div className="calendar-days">
-              {calendar.cells.map((cell, index) =>
-                cell ? (
-                  <span className={cell.isWeddingDay ? 'wedding-day' : ''} key={cell.day}>
-                    {cell.day}
-                  </span>
-                ) : (
-                  <span key={'empty-' + index} />
-                ),
-              )}
-            </div>
-          </div>
-          <div className="countdown reveal-item" aria-label="예식까지 남은 시간">
-            {([
-              ['Days', countdown.days],
-              ['Hours', countdown.hours],
-              ['Minutes', countdown.minutes],
-              ['Seconds', countdown.seconds],
-            ] as const).map(([label, value]) => (
-              <div key={label}>
-                <strong>{value}</strong>
-                <span>{label}</span>
-              </div>
-            ))}
-          </div>
-          <div className="quick-location reveal-item" aria-label="예식 장소 빠른 안내">
-            <div className="quick-location-summary">
-              <PinIcon />
-              <div>
-                <p>LOCATION</p>
-                <h3>{invitation.venue.name}</h3>
-                <span>{invitation.venue.hall}</span>
-                <span className="quick-location-address">{invitation.venue.address}</span>
-              </div>
-              <button onClick={() => copyText(invitation.venue.address, '주소')} aria-label="주소 복사">
-                복사
-              </button>
-            </div>
-            <div className="map-actions">
-              <a href={mapFallbackLink('tmap')} onClick={(event) => openNavigationApp(event, 'tmap')}>티맵</a>
-              <a href={mapLink('kakao')} target="_blank" rel="noreferrer">카카오맵</a>
-              <a href={mapFallbackLink('naver')} onClick={(event) => openNavigationApp(event, 'naver')}>네이버지도</a>
-            </div>
           </div>
         </section>
 
@@ -989,6 +948,28 @@ function App() {
           <span aria-hidden="true">↑</span>
         </button>
       )}
+
+      <dialog
+        ref={directionsDialogRef}
+        className="directions-dialog"
+        aria-labelledby="directions-heading"
+        onClick={(event) => {
+          if (event.target === event.currentTarget) directionsDialogRef.current?.close()
+        }}
+      >
+        <div className="directions-content">
+          <button className="menu-close" onClick={() => directionsDialogRef.current?.close()} aria-label="오시는 방법 닫기"><CloseIcon /></button>
+          <p className="section-eyebrow">GETTING HERE</p>
+          <h2 id="directions-heading">오시는 방법</h2>
+          <p className="directions-venue">{invitation.venue.name}<br />{invitation.venue.hall}</p>
+          <div className="transport-note directions-details">
+            <p><strong>지하철</strong><span>2호선 신도림역 1번 출구<br />(신도림역 광장 도보 5분)</span></p>
+            <p><strong>셔틀버스 타는 곳</strong><span>신도림역 1번 출구 앞</span></p>
+            <p><strong>주차</strong><span>호텔 내 주차장 이용<br />(예식 당일 1시간 30분 무료 주차)</span></p>
+          </div>
+          <button className="directions-open" onClick={() => directionsDialogRef.current?.close()}>확인했어요</button>
+        </div>
+      </dialog>
 
       {menuOpen && (
         <div className="menu-layer" role="dialog" aria-modal="true" aria-label="청첩장 메뉴">
