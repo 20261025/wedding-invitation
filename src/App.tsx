@@ -700,6 +700,62 @@ function App() {
           </div>
         </section>
 
+        <section className="calendar-section section-space reveal-section" data-reveal id="calendar" aria-labelledby="calendar-heading">
+          <p className="section-eyebrow">SAVE THE DATE</p>
+          <h2 id="calendar-heading">{invitation.displayDate}</h2>
+          <div className="calendar-paper reveal-item">
+            <div className="calendar-title">{calendar.label}</div>
+            <div className="calendar-weekdays">
+              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => (
+                <span key={day}>{day}</span>
+              ))}
+            </div>
+            <div className="calendar-days">
+              {calendar.cells.map((cell, index) =>
+                cell ? (
+                  <span className={cell.isWeddingDay ? 'wedding-day' : ''} key={cell.day}>
+                    {cell.day}
+                  </span>
+                ) : (
+                  <span key={'empty-' + index} />
+                ),
+              )}
+            </div>
+          </div>
+          <div className="countdown reveal-item" aria-label="예식까지 남은 시간">
+            {([
+              ['Days', countdown.days],
+              ['Hours', countdown.hours],
+              ['Minutes', countdown.minutes],
+              ['Seconds', countdown.seconds],
+            ] as const).map(([label, value]) => (
+              <div key={label}>
+                <strong>{value}</strong>
+                <span>{label}</span>
+              </div>
+            ))}
+          </div>
+          <div className="quick-location reveal-item" aria-label="예식 장소 빠른 안내">
+            <div className="quick-location-summary">
+              <PinIcon />
+              <div>
+                <p>LOCATION</p>
+                <h3>{invitation.venue.name}</h3>
+                <span>{invitation.venue.hall}</span>
+                <span className="quick-location-address">{invitation.venue.address}</span>
+              </div>
+              <button onClick={() => copyText(invitation.venue.address, '주소')} aria-label="주소 복사">
+                복사
+              </button>
+            </div>
+            <div className="map-actions">
+              <a href={mapFallbackLink('tmap')} onClick={(event) => openNavigationApp(event, 'tmap')}>티맵</a>
+              <a href={mapLink('kakao')} target="_blank" rel="noreferrer">카카오맵</a>
+              <a href={mapFallbackLink('naver')} onClick={(event) => openNavigationApp(event, 'naver')}>네이버지도</a>
+            </div>
+          </div>
+        </section>
+
         <section className="story section-space reveal-section" data-reveal aria-labelledby="story-heading">
           <FlowerMark />
           <p className="section-eyebrow">OUR PROMISE</p>
@@ -770,43 +826,6 @@ function App() {
                 {invitation.couple.bride.father} · {invitation.couple.bride.mother} 의 {invitation.couple.bride.familyRole}
               </p>
             </article>
-          </div>
-        </section>
-
-        <section className="calendar-section section-space reveal-section" data-reveal id="calendar" aria-labelledby="calendar-heading">
-          <p className="section-eyebrow">SAVE THE DATE</p>
-          <h2 id="calendar-heading">{invitation.displayDate}</h2>
-          <div className="calendar-paper reveal-item">
-            <div className="calendar-title">{calendar.label}</div>
-            <div className="calendar-weekdays">
-              {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map((day) => (
-                <span key={day}>{day}</span>
-              ))}
-            </div>
-            <div className="calendar-days">
-              {calendar.cells.map((cell, index) =>
-                cell ? (
-                  <span className={cell.isWeddingDay ? 'wedding-day' : ''} key={cell.day}>
-                    {cell.day}
-                  </span>
-                ) : (
-                  <span key={'empty-' + index} />
-                ),
-              )}
-            </div>
-          </div>
-          <div className="countdown reveal-item" aria-label="예식까지 남은 시간">
-            {([
-              ['Days', countdown.days],
-              ['Hours', countdown.hours],
-              ['Minutes', countdown.minutes],
-              ['Seconds', countdown.seconds],
-            ] as const).map(([label, value]) => (
-              <div key={label}>
-                <strong>{value}</strong>
-                <span>{label}</span>
-              </div>
-            ))}
           </div>
         </section>
 

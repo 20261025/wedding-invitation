@@ -915,6 +915,85 @@ svg {
   letter-spacing: 0.08em;
 }
 
+.quick-location {
+  margin-top: 24px;
+  padding: 22px 0 0;
+  border-top: 1px solid rgb(190 180 168 / 58%);
+  text-align: left;
+}
+
+.quick-location-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #776e66;
+}
+
+.quick-location-summary > svg {
+  width: 15px;
+  flex: 0 0 auto;
+  color: #9b8276;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.quick-location-summary > div {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  gap: 2px;
+}
+
+.quick-location-summary p,
+.quick-location-summary h3,
+.quick-location-summary span {
+  margin: 0;
+}
+
+.quick-location-summary p {
+  color: #9c9187;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+}
+
+.quick-location-summary h3 {
+  color: #575049;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.quick-location-summary span {
+  color: #8e847a;
+  font-size: 9px;
+  line-height: 1.45;
+  word-break: keep-all;
+}
+
+.quick-location-summary .quick-location-address {
+  margin-top: 2px;
+  color: #9a9086;
+}
+
+.quick-location-summary button {
+  padding: 5px 0 5px 8px;
+  color: #897c71;
+  background: transparent;
+  font-size: 10px;
+}
+
+.quick-location .map-actions {
+  margin-top: 16px;
+}
+
+.quick-location .map-actions a {
+  border-color: rgb(192 181 168 / 52%);
+  background: rgb(255 255 255 / 22%);
+}
+
 .gallery-section {
   --section-glow: rgb(229 220 211 / 36%);
   background-color: rgb(253 252 248 / 96%);
